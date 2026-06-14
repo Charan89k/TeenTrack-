@@ -35,7 +35,7 @@ export default function TeenTrackApp() {
   const { toast } = useToast();
 
   useEffect(() => {
-    const saved = localStorage.getItem('teenTrackState_v5');
+    const saved = localStorage.getItem('teenTrackState_v6');
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
@@ -51,7 +51,7 @@ export default function TeenTrackApp() {
 
   useEffect(() => {
     if (hydrated) {
-      localStorage.setItem('teenTrackState_v5', JSON.stringify(state));
+      localStorage.setItem('teenTrackState_v6', JSON.stringify(state));
       checkAchievements();
     }
   }, [state, hydrated]);
