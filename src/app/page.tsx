@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect } from "react";
@@ -12,6 +13,7 @@ import { CurrencySelector } from "@/components/CurrencySelector";
 import { AIMotivator } from "@/components/AIMotivator";
 import { useToast } from "@/hooks/use-toast";
 import { Toaster } from "@/components/ui/toaster";
+import Loading from "./loading";
 
 const INITIAL_STATE: AppState = {
   transactions: [],
@@ -148,7 +150,7 @@ export default function TeenTrackApp() {
     return "Apprentice";
   };
 
-  if (!hydrated) return null;
+  if (!hydrated) return <Loading />;
 
   return (
     <main className="min-h-screen max-w-5xl mx-auto pb-24 px-4 sm:px-6">
