@@ -39,7 +39,6 @@ export default function TeenTrackApp() {
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
-        // Migration: Ensure categories exist
         if (!parsed.categories) parsed.categories = INITIAL_STATE.categories;
         setState(parsed);
       } catch (e) {

@@ -38,8 +38,18 @@ export function Dashboard({ state, symbol, onUpdateCategory, onAddCategory, onDe
     .filter(t => t.type === 'expense')
     .reduce((acc, curr) => acc + curr.amount, 0);
 
-  const totalSaved = filteredTransactions
-    .filter(t => t.type === 'income')
+  // For the "Saved" card, we specifically want to track money entering stashes
+  const totalStashDeposits = filteredTransactions
+    .filter(t => t.type === 'income' && (t.description.includes('Saved to') || t.description.includes('Vault')))
+    .reduce((acc, curr) => acc + curr.amount, 0);
+
+  // All-time total stash deposits
+  const allTimeStashDeposits = state.transactions
+    .filter(t => t.type === 'income' && (t.description.includes('Saved to') || t.description.includes('Vault')))
+    .reduce((acc, curr) => acc + curr.amount, 0);
+
+  const totalIncome = filteredTransactions
+    .filter(t => t.type === 'income' && !t.description.includes('Saved to') && !t.description.includes('Vault'))
     .reduce((acc, curr) => acc + curr.amount, 0);
 
   const categoryTotals = state.categories.reduce((acc, cat) => {
@@ -88,11 +98,11 @@ export function Dashboard({ state, symbol, onUpdateCategory, onAddCategory, onDe
           <div className="flex gap-4 mt-6">
             <div className="flex items-center gap-1.5 text-sm font-semibold px-3 py-1 bg-green-50 text-green-600 rounded-full">
               <ArrowUpRight className="w-4 h-4" />
-              {formatCurrency(totalSaved, symbol, state.currency)} {criteria === "month" ? "this month" : "total"}
+              {formatCurrency(totalIncome, symbol, state.currency)} {criteria === "month" ? "income" : "total income"}
             </div>
             <div className="flex items-center gap-1.5 text-sm font-semibold px-3 py-1 bg-red-50 text-red-600 rounded-full">
               <ArrowDownRight className="w-4 h-4" />
-              {formatCurrency(totalSpent, symbol, state.currency)} {criteria === "month" ? "this month" : "total"}
+              {formatCurrency(totalSpent, symbol, state.currency)} {criteria === "month" ? "spent" : "total spent"}
             </div>
           </div>
         </Card>
@@ -102,7 +112,7 @@ export function Dashboard({ state, symbol, onUpdateCategory, onAddCategory, onDe
             <p className="text-white/70 font-medium text-sm uppercase tracking-wider mb-2">Saved {criteria === "month" ? "This Month" : "Total"}</p>
             <h3 className="text-4xl font-bold">
               {formatCurrency(
-                criteria === "all" ? (state.flexibleSavings + state.lockedSavings) : totalSaved, 
+                criteria === "all" ? allTimeStashDeposits : totalStashDeposits, 
                 symbol, 
                 state.currency
               )}
@@ -110,8 +120,8 @@ export function Dashboard({ state, symbol, onUpdateCategory, onAddCategory, onDe
           </div>
           <p className="text-sm text-white/60 mt-4 leading-relaxed relative z-10">
             {criteria === "month" 
-              ? "Consistency builds wealth habits. You're doing great!" 
-              : "Tracking your stash over time is the ultimate flex."}
+              ? "This reflects actual money moved into your stashes." 
+              : "Every deposit brings you closer to your financial goals."}
           </p>
           <div className="absolute top-[-20px] right-[-20px] w-32 h-32 bg-white/10 rounded-full blur-3xl pointer-events-none" />
         </Card>
