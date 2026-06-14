@@ -77,7 +77,13 @@ export function Dashboard({ state, symbol }: { state: AppState; symbol: string }
         <Card className="flat-card p-8 bg-primary text-white flex flex-col justify-between">
           <div>
             <p className="text-white/70 font-medium text-sm uppercase tracking-wider mb-2">Saved {criteria === "month" ? "This Month" : "Total"}</p>
-            <h3 className="text-4xl font-bold">{formatCurrency(totalSaved, symbol, state.currency)}</h3>
+            <h3 className="text-4xl font-bold">
+              {formatCurrency(
+                criteria === "all" ? (state.flexibleSavings + state.lockedSavings) : totalSaved, 
+                symbol, 
+                state.currency
+              )}
+            </h3>
           </div>
           <p className="text-sm text-white/60 mt-4 leading-relaxed">
             {criteria === "month" 

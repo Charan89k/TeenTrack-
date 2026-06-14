@@ -34,7 +34,7 @@ export default function TeenTrackApp() {
   const { toast } = useToast();
 
   useEffect(() => {
-    const saved = localStorage.getItem('teenTrackState_v3');
+    const saved = localStorage.getItem('teenTrackState_v4');
     if (saved) {
       try {
         setState(JSON.parse(saved));
@@ -47,7 +47,7 @@ export default function TeenTrackApp() {
 
   useEffect(() => {
     if (hydrated) {
-      localStorage.setItem('teenTrackState_v3', JSON.stringify(state));
+      localStorage.setItem('teenTrackState_v4', JSON.stringify(state));
       checkAchievements();
     }
   }, [state, hydrated]);
@@ -99,13 +99,15 @@ export default function TeenTrackApp() {
   };
 
   const handleUpdateSavings = (type: 'flex' | 'locked', amount: number, action: 'deposit' | 'withdraw' | 'lock' | 'adjust') => {
-    if (isNaN(amount)) {
-      toast({ title: "Invalid amount", description: "Please enter a valid number.", variant: "destructive" });
-      return;
+    if (isNaN(amount) || amount <= 0) {
+      if (action !== 'adjust') return;
     }
 
     setState(prev => {
       let next = { ...prev };
+      const date = new Date().toISOString().split('T')[0];
+      const category = type === 'flex' ? 'Flexible Stash' : 'The Vault';
+
       if (action === 'deposit' || action === 'lock') {
         if (prev.totalBalance < amount) {
           toast({ title: "Insufficient funds", description: "You don't have enough balance.", variant: "destructive" });
@@ -117,13 +119,41 @@ export default function TeenTrackApp() {
           next.lockedSavings += amount;
           next.lockedUntil = Date.now() + (30 * 24 * 60 * 60 * 1000);
         }
+        
+        // Record deposit as a "Saving" income transaction for the dashboard
+        const saveTx: Transaction = {
+          id: Math.random().toString(36).substr(2, 9),
+          amount,
+          type: 'income',
+          category: 'Other',
+          description: `Saved to ${category}`,
+          date,
+          timestamp: Date.now(),
+        };
+        next.transactions = [...next.transactions, saveTx];
+        
       } else if (action === 'withdraw') {
-        if (prev.flexibleSavings < amount) {
-          toast({ title: "Insufficient savings", description: "Not enough in flexible stash.", variant: "destructive" });
+        const currentBalance = type === 'flex' ? prev.flexibleSavings : prev.lockedSavings;
+        if (currentBalance < amount) {
+          toast({ title: "Insufficient savings", description: `Not enough in ${category}.`, variant: "destructive" });
           return prev;
         }
-        next.flexibleSavings -= amount;
+        if (type === 'flex') next.flexibleSavings -= amount;
+        else next.lockedSavings -= amount;
         next.totalBalance += amount;
+        
+        // Record withdrawal as an expense from savings
+        const withdrawTx: Transaction = {
+          id: Math.random().toString(36).substr(2, 9),
+          amount,
+          type: 'expense',
+          category: 'Other',
+          description: `Withdrew from ${category}`,
+          date,
+          timestamp: Date.now(),
+        };
+        next.transactions = [...next.transactions, withdrawTx];
+        
       } else if (action === 'adjust') {
         if (type === 'flex') next.flexibleSavings = amount;
         else next.lockedSavings = amount;
@@ -131,7 +161,7 @@ export default function TeenTrackApp() {
       return next;
     });
 
-    toast({ title: "Savings Updated", description: "Your balance has been adjusted." });
+    toast({ title: "Savings Updated", description: "Your balance and activity have been updated." });
   };
 
   const handleUpdateGoals = (flexibleGoal: number, lockedGoal: number) => {
@@ -140,12 +170,28 @@ export default function TeenTrackApp() {
   };
 
   const handleUnlock = () => {
-    setState(prev => ({
-      ...prev,
-      totalBalance: prev.totalBalance + (prev.lockedSavings * 1.05),
-      lockedSavings: 0,
-      lockedUntil: null,
-    }));
+    setState(prev => {
+      const bonus = prev.lockedSavings * 0.05;
+      const totalToBalance = prev.lockedSavings + bonus;
+      
+      const bonusTx: Transaction = {
+        id: Math.random().toString(36).substr(2, 9),
+        amount: bonus,
+        type: 'income',
+        category: 'Other',
+        description: "Vault Bonus (5%)",
+        date: new Date().toISOString().split('T')[0],
+        timestamp: Date.now(),
+      };
+
+      return {
+        ...prev,
+        totalBalance: prev.totalBalance + totalToBalance,
+        lockedSavings: 0,
+        lockedUntil: null,
+        transactions: [...prev.transactions, bonusTx]
+      };
+    });
     toast({ title: "Vault Unlocked", description: "5% bonus has been applied to your balance." });
   };
 
