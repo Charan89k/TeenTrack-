@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect, useRef } from "react";
@@ -34,7 +35,7 @@ export function AIMotivator({ state }: { state: AppState }) {
         savingRate: Math.round(((state.flexibleSavings + state.lockedSavings) / (state.totalBalance + 0.01)) * 100),
         flexibleSavings: state.flexibleSavings,
         lockedSavings: state.lockedSavings,
-        achievementsUnlocked: state.unlockedAchievements,
+        achievementsCount: state.unlockedAchievements.length,
       });
       
       setQuote(res);
@@ -54,7 +55,7 @@ export function AIMotivator({ state }: { state: AppState }) {
     // Poll every 10 minutes
     const timer = setInterval(updateAI, 600000);
     return () => clearInterval(timer);
-  }, [state.unlockedAchievements.length]); // Re-run if they unlock something new
+  }, [state.unlockedAchievements.length]);
 
   if (!isVisible || !quote) return null;
 

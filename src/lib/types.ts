@@ -16,6 +16,8 @@ export type AppState = {
   totalBalance: number;
   flexibleSavings: number;
   lockedSavings: number;
+  flexibleGoal: number;
+  lockedGoal: number;
   lockedUntil: number | null;
   currency: string;
   unlockedAchievements: string[];

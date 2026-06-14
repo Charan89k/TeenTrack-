@@ -20,6 +20,8 @@ const INITIAL_STATE: AppState = {
   totalBalance: 1250.00,
   flexibleSavings: 200,
   lockedSavings: 500,
+  flexibleGoal: 500,
+  lockedGoal: 1000,
   lockedUntil: null,
   currency: 'USD',
   unlockedAchievements: ['first_tx'],
@@ -32,7 +34,7 @@ export default function TeenTrackApp() {
   const { toast } = useToast();
 
   useEffect(() => {
-    const saved = localStorage.getItem('teenTrackState_v2');
+    const saved = localStorage.getItem('teenTrackState_v3');
     if (saved) {
       try {
         setState(JSON.parse(saved));
@@ -45,7 +47,7 @@ export default function TeenTrackApp() {
 
   useEffect(() => {
     if (hydrated) {
-      localStorage.setItem('teenTrackState_v2', JSON.stringify(state));
+      localStorage.setItem('teenTrackState_v3', JSON.stringify(state));
       checkAchievements();
     }
   }, [state, hydrated]);
@@ -65,14 +67,11 @@ export default function TeenTrackApp() {
     if (totalBalance >= 1000 && !newAchievements.includes('balance_keeper')) newAchievements.push('balance_keeper');
 
     if (newAchievements.length !== state.unlockedAchievements.length) {
-      const added = newAchievements.filter(x => !state.unlockedAchievements.includes(x));
-      added.forEach(() => {
-        toast({
-          title: "🏆 Achievement Unlocked",
-          description: "Check your progress in the Analytics tab.",
-        });
-      });
       setState(prev => ({ ...prev, unlockedAchievements: newAchievements }));
+      toast({
+        title: "🏆 Achievement Unlocked",
+        description: "Check your progress in the Stats tab.",
+      });
     }
   };
 
@@ -95,12 +94,12 @@ export default function TeenTrackApp() {
 
     toast({
       title: type === 'income' ? "Income Added" : "Expense Logged",
-      description: type === 'income' ? `+${amount} successfully tracked.` : `-${amount} successfully tracked.`,
+      description: type === 'income' ? `+${amount} tracked.` : `-${amount} tracked.`,
     });
   };
 
-  const handleUpdateSavings = (type: 'flex' | 'locked', amount: number, action: 'deposit' | 'withdraw' | 'lock') => {
-    if (isNaN(amount) || amount <= 0) {
+  const handleUpdateSavings = (type: 'flex' | 'locked', amount: number, action: 'deposit' | 'withdraw' | 'lock' | 'adjust') => {
+    if (isNaN(amount)) {
       toast({ title: "Invalid amount", description: "Please enter a valid number.", variant: "destructive" });
       return;
     }
@@ -125,9 +124,19 @@ export default function TeenTrackApp() {
         }
         next.flexibleSavings -= amount;
         next.totalBalance += amount;
+      } else if (action === 'adjust') {
+        if (type === 'flex') next.flexibleSavings = amount;
+        else next.lockedSavings = amount;
       }
       return next;
     });
+
+    toast({ title: "Savings Updated", description: "Your balance has been adjusted." });
+  };
+
+  const handleUpdateGoals = (flexibleGoal: number, lockedGoal: number) => {
+    setState(prev => ({ ...prev, flexibleGoal, lockedGoal }));
+    toast({ title: "Goals Updated", description: "Your savings targets have been saved." });
   };
 
   const handleUnlock = () => {
@@ -170,7 +179,15 @@ export default function TeenTrackApp() {
       <div className="mt-8">
         {activeTab === 'Dashboard' && <Dashboard state={state} symbol={currentSymbol} />}
         {activeTab === 'Expenses' && <Expenses state={state} symbol={currentSymbol} onAddTransaction={handleAddTransaction} />}
-        {activeTab === 'Savings' && <Savings state={state} symbol={currentSymbol} onUpdateSavings={handleUpdateSavings} onUnlock={handleUnlock} />}
+        {activeTab === 'Savings' && (
+          <Savings 
+            state={state} 
+            symbol={currentSymbol} 
+            onUpdateSavings={handleUpdateSavings} 
+            onUpdateGoals={handleUpdateGoals}
+            onUnlock={handleUnlock} 
+          />
+        )}
         {activeTab === 'Analytics' && <Analytics state={state} symbol={currentSymbol} />}
       </div>
 

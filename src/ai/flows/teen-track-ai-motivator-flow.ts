@@ -18,7 +18,7 @@ const TeenTrackAIMotivatorInputSchema = z.object({
   savingRate: z.number().describe('The user\'s saving rate as a percentage.'),
   flexibleSavings: z.number().describe('The current balance in flexible savings.'),
   lockedSavings: z.number().describe('The current balance in locked savings.'),
-  achievementsUnlocked: z.array(z.string()).describe('A list of achievements the user has unlocked.'),
+  achievementsCount: z.number().describe('The number of achievements the user has unlocked.'),
 });
 export type TeenTrackAIMotivatorInput = z.infer<typeof TeenTrackAIMotivatorInputSchema>;
 
@@ -45,7 +45,7 @@ User Financial Data:
 - Saving Rate: {{{savingRate}}}%
 - Flexible Stash: {{{flexibleSavings}}}
 - Locked Vault: {{{lockedSavings}}}
-- Achievements Count: {{{achievementsUnlocked.length}}}
+- Achievements Count: {{{achievementsCount}}}
 
 Instructions:
 1. Provide a confidence-boosting motivational quote based on their progress.
