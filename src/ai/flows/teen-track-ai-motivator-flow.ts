@@ -50,6 +50,7 @@ Instructions:
 1. Provide a confidence-boosting motivational quote based on their progress.
 2. Provide one actionable financial tip that focuses on smart habits.
 3. Be concise and use a high-energy, positive tone.
+4. If they have unlocked many achievements, mention their "Boss" status.
 
 Output JSON format with 'motivation' and 'tip' fields.`,
 });
