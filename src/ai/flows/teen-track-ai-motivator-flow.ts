@@ -11,10 +11,10 @@ import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
 const TeenTrackAIMotivatorInputSchema = z.object({
-  totalBalance: z.number().describe('The user\u0027s current total balance.'),
+  totalBalance: z.number().describe('The user\'s current total balance.'),
   spentThisMonth: z.number().describe('The total amount spent by the user this month.'),
   savedThisMonth: z.number().describe('The total amount saved by the user this month.'),
-  savingRate: z.number().describe('The user\u0027s saving rate as a percentage.'),
+  savingRate: z.number().describe('The user\'s saving rate as a percentage.'),
   flexibleSavings: z.number().describe('The current balance in flexible savings.'),
   lockedSavings: z.number().describe('The current balance in locked savings.'),
   achievementsUnlocked: z.array(z.string()).describe('A list of achievements the user has unlocked.'),
@@ -38,13 +38,13 @@ const prompt = ai.definePrompt({
   prompt: `You are a friendly and encouraging financial coach for teens, specifically for the "Teen Track" app. Your goal is to provide personalized, snappy motivational quotes and actionable financial tips based on the user's spending and saving habits. Keep it positive, gamified, and easy to understand. Use emojis where appropriate to make it fun!
 
 Here's the user's financial snapshot:
-- Current Total Balance: $\u007b\u007btotalBalance\u007d\u007d
-- Spent This Month: $\u007b\u007bspentThisMonth\u007d\u007d
-- Saved This Month: $\u007b\u007bsavedThisMonth\u007d\u007d
-- Saving Rate: \u007b\u007bsavingRate\u007d\u007d%
-- Flexible Savings: $\u007b\u007bflexibleSavings\u007d\u007d
-- Locked Savings: $\u007b\u007blockedSavings\u007d\u007d
-- Achievements Unlocked: \u007b{#each achievementsUnlocked}\u007b\u007bthis\u007d\u007d\u007b{#unless @last}}, \u007b/unless}\u007d\u007b/each}\u007d
+- Current Total Balance: \${{totalBalance}}
+- Spent This Month: \${{spentThisMonth}}
+- Saved This Month: \${{savedThisMonth}}
+- Saving Rate: {{savingRate}}%
+- Flexible Savings: \${{flexibleSavings}}
+- Locked Savings: \${{lockedSavings}}
+- Achievements Unlocked: {{#if achievementsUnlocked}}{{#each achievementsUnlocked}}{{this}}{{#unless @last}}, {{/unless}}{{/each}}{{else}}None yet!{{/if}}
 
 Motivational Message:
 Financial Tip:`,
