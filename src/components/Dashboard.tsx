@@ -5,10 +5,9 @@ import { useState } from "react";
 import { AppState } from "@/lib/types";
 import { Card } from "@/components/ui/card";
 import { formatCurrency, getAutoEmoji } from "@/lib/utils-finance";
-import { ArrowUpRight, ArrowDownRight, Filter, PencilLine, Check } from "lucide-react";
+import { ArrowUpRight, ArrowDownRight, Filter, PencilLine, Check, Plus, Trash2 } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 
 type ViewCriteria = "month" | "all";
 
@@ -16,9 +15,11 @@ interface DashboardProps {
   state: AppState;
   symbol: string;
   onUpdateCategory: (index: number, newName: string) => void;
+  onAddCategory: () => void;
+  onDeleteCategory: (index: number) => void;
 }
 
-export function Dashboard({ state, symbol, onUpdateCategory }: DashboardProps) {
+export function Dashboard({ state, symbol, onUpdateCategory, onAddCategory, onDeleteCategory }: DashboardProps) {
   const [criteria, setCriteria] = useState<ViewCriteria>("month");
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
   const [editValue, setEditValue] = useState("");
@@ -125,21 +126,31 @@ export function Dashboard({ state, symbol, onUpdateCategory }: DashboardProps) {
                 <span className="text-2xl p-2 bg-muted rounded-xl group-hover:bg-primary/10 transition-colors">
                   {getAutoEmoji(isEditing ? editValue : cat)}
                 </span>
-                {!isEditing ? (
-                  <button 
-                    onClick={() => handleStartEdit(index, cat)}
-                    className="opacity-0 group-hover:opacity-100 transition-opacity p-1.5 hover:bg-muted rounded-full text-muted-foreground"
-                  >
-                    <PencilLine className="w-3.5 h-3.5" />
-                  </button>
-                ) : (
-                  <button 
-                    onClick={() => handleSaveEdit(index)}
-                    className="p-1.5 bg-primary/10 text-primary rounded-full"
-                  >
-                    <Check className="w-3.5 h-3.5" />
-                  </button>
-                )}
+                <div className="flex gap-1">
+                  {!isEditing ? (
+                    <>
+                      <button 
+                        onClick={() => handleStartEdit(index, cat)}
+                        className="opacity-0 group-hover:opacity-100 transition-opacity p-1.5 hover:bg-muted rounded-full text-muted-foreground"
+                      >
+                        <PencilLine className="w-3.5 h-3.5" />
+                      </button>
+                      <button 
+                        onClick={() => onDeleteCategory(index)}
+                        className="opacity-0 group-hover:opacity-100 transition-opacity p-1.5 hover:bg-red-50 hover:text-red-500 rounded-full text-muted-foreground"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    </>
+                  ) : (
+                    <button 
+                      onClick={() => handleSaveEdit(index)}
+                      className="p-1.5 bg-primary/10 text-primary rounded-full"
+                    >
+                      <Check className="w-3.5 h-3.5" />
+                    </button>
+                  )}
+                </div>
               </div>
               
               {isEditing ? (
@@ -161,6 +172,16 @@ export function Dashboard({ state, symbol, onUpdateCategory }: DashboardProps) {
             </Card>
           );
         })}
+        
+        <Card 
+          onClick={onAddCategory}
+          className="flat-card p-6 border-dashed border-2 flex flex-col items-center justify-center cursor-pointer hover:bg-muted/50 hover:border-primary/50 transition-all min-h-[140px]"
+        >
+          <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center mb-2">
+            <Plus className="w-6 h-6 text-muted-foreground" />
+          </div>
+          <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest text-center">Add Category</p>
+        </Card>
       </div>
     </div>
   );

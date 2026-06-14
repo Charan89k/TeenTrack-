@@ -179,6 +179,22 @@ export default function TeenTrackApp() {
     });
   };
 
+  const handleAddCategory = () => {
+    setState(prev => ({
+      ...prev,
+      categories: [...prev.categories, 'New Category']
+    }));
+    toast({ title: "Category Added", description: "You can rename it by clicking the edit icon." });
+  };
+
+  const handleDeleteCategory = (index: number) => {
+    setState(prev => {
+      const newCategories = prev.categories.filter((_, i) => i !== index);
+      return { ...prev, categories: newCategories };
+    });
+    toast({ title: "Category Deleted", description: "The category has been removed from your dashboard." });
+  };
+
   const handleUnlock = () => {
     setState(prev => {
       const bonus = prev.lockedSavings * 0.05;
@@ -237,7 +253,9 @@ export default function TeenTrackApp() {
           <Dashboard 
             state={state} 
             symbol={currentSymbol} 
-            onUpdateCategory={handleUpdateCategory} 
+            onUpdateCategory={handleUpdateCategory}
+            onAddCategory={handleAddCategory}
+            onDeleteCategory={handleDeleteCategory}
           />
         )}
         {activeTab === 'Expenses' && (
