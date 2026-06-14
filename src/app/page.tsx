@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState, useEffect } from "react";
@@ -13,16 +12,15 @@ import { CurrencySelector } from "@/components/CurrencySelector";
 import { AIMotivator } from "@/components/AIMotivator";
 import { useToast } from "@/hooks/use-toast";
 import { Toaster } from "@/components/ui/toaster";
-import { AlertCircle, CheckCircle2 } from "lucide-react";
 
 const INITIAL_STATE: AppState = {
   transactions: [],
-  totalBalance: 1000.00,
-  flexibleSavings: 0,
-  lockedSavings: 0,
+  totalBalance: 1250.00,
+  flexibleSavings: 200,
+  lockedSavings: 500,
   lockedUntil: null,
   currency: 'USD',
-  unlockedAchievements: [],
+  unlockedAchievements: ['first_tx'],
 };
 
 export default function TeenTrackApp() {
@@ -31,25 +29,28 @@ export default function TeenTrackApp() {
   const [hydrated, setHydrated] = useState(false);
   const { toast } = useToast();
 
-  // Hydration & Storage
   useEffect(() => {
-    const saved = localStorage.getItem('teenTrackState');
+    const saved = localStorage.getItem('teenTrackState_v2');
     if (saved) {
-      setState(JSON.parse(saved));
+      try {
+        setState(JSON.parse(saved));
+      } catch (e) {
+        console.error("Failed to load state", e);
+      }
     }
     setHydrated(true);
   }, []);
 
   useEffect(() => {
     if (hydrated) {
-      localStorage.setItem('teenTrackState', JSON.stringify(state));
+      localStorage.setItem('teenTrackState_v2', JSON.stringify(state));
       checkAchievements();
     }
   }, [state, hydrated]);
 
   const checkAchievements = () => {
     const newAchievements: string[] = [...state.unlockedAchievements];
-    const { transactions, totalBalance, flexibleSavings, lockedSavings } = state;
+    const { transactions, flexibleSavings, lockedSavings, totalBalance } = state;
     
     const incomeCount = transactions.filter(t => t.type === 'income').length;
     const expenseCount = transactions.filter(t => t.type === 'expense').length;
@@ -65,9 +66,8 @@ export default function TeenTrackApp() {
       const added = newAchievements.filter(x => !state.unlockedAchievements.includes(x));
       added.forEach(() => {
         toast({
-          title: "🏆 Achievement Unlocked!",
-          description: "Check your achievements gallery in Analytics!",
-          className: "glass-card border-teal-500 bg-teal-500/20",
+          title: "🏆 Achievement Unlocked",
+          description: "Check your progress in the Analytics tab.",
         });
       });
       setState(prev => ({ ...prev, unlockedAchievements: newAchievements }));
@@ -92,17 +92,14 @@ export default function TeenTrackApp() {
     }));
 
     toast({
-      title: type === 'income' ? "Cha-ching! 💸" : "Spend Logged 🛍️",
-      description: type === 'income' 
-        ? (amount > 100 ? "Big money move! Great work! 🚀" : "Every dollar counts! Keep it up!") 
-        : (amount > 100 ? "Whoa, a big purchase! Hope it was worth it! ✨" : "Nice tracking, keep staying smart!"),
-      className: "glass-card border-white/20",
+      title: type === 'income' ? "Income Added" : "Expense Logged",
+      description: type === 'income' ? `+${amount} successfully tracked.` : `-${amount} successfully tracked.`,
     });
   };
 
   const handleUpdateSavings = (type: 'flex' | 'locked', amount: number, action: 'deposit' | 'withdraw' | 'lock') => {
     if (isNaN(amount) || amount <= 0) {
-      toast({ title: "Oops!", description: "Please enter a valid amount.", variant: "destructive" });
+      toast({ title: "Invalid amount", description: "Please enter a valid number.", variant: "destructive" });
       return;
     }
 
@@ -110,24 +107,22 @@ export default function TeenTrackApp() {
       let next = { ...prev };
       if (action === 'deposit' || action === 'lock') {
         if (prev.totalBalance < amount) {
-          toast({ title: "Insufficient Balance!", description: "You don't have enough to save that much.", variant: "destructive" });
+          toast({ title: "Insufficient funds", description: "You don't have enough balance.", variant: "destructive" });
           return prev;
         }
         next.totalBalance -= amount;
         if (type === 'flex') next.flexibleSavings += amount;
         else {
           next.lockedSavings += amount;
-          next.lockedUntil = Date.now() + (30 * 24 * 60 * 60 * 1000); // 30 days
+          next.lockedUntil = Date.now() + (30 * 24 * 60 * 60 * 1000);
         }
-        toast({ title: "Savings Updated!", description: `Moved ${amount} to your ${type === 'flex' ? 'Flexible' : 'Locked'} stash.` });
       } else if (action === 'withdraw') {
         if (prev.flexibleSavings < amount) {
-          toast({ title: "Not enough savings!", description: "You don't have that much in flexible savings.", variant: "destructive" });
+          toast({ title: "Insufficient savings", description: "Not enough in flexible stash.", variant: "destructive" });
           return prev;
         }
         next.flexibleSavings -= amount;
         next.totalBalance += amount;
-        toast({ title: "Funds Withdrawn!", description: `Moved ${amount} back to your main balance.` });
       }
       return next;
     });
@@ -140,29 +135,29 @@ export default function TeenTrackApp() {
       lockedSavings: 0,
       lockedUntil: null,
     }));
-    toast({ title: "Locked Bonus Claimed! 💎", description: "Your savings plus a 5% bonus have been added to your balance!", className: "bg-teal-500" });
+    toast({ title: "Vault Unlocked", description: "5% bonus has been applied to your balance." });
   };
 
   const currentSymbol = CURRENCIES.find(c => c.code === state.currency)?.symbol || '$';
 
   const getMoneyLevel = () => {
     const score = state.transactions.length + state.unlockedAchievements.length * 5;
-    if (score > 50) return "Money Master 👑";
-    if (score > 20) return "Budget Boss 🎩";
-    if (score > 5) return "Smart Saver 🧠";
-    return "Money Apprentice 🌱";
+    if (score > 50) return "Master";
+    if (score > 20) return "Boss";
+    if (score > 5) return "Saver";
+    return "Apprentice";
   };
 
   if (!hydrated) return null;
 
   return (
-    <main className="min-h-screen max-w-6xl mx-auto pb-24">
+    <main className="min-h-screen max-w-5xl mx-auto pb-24 px-4 sm:px-6">
       <Header level={getMoneyLevel()} />
       <AIMotivator state={state} />
       
       <Navigation activeTab={activeTab} setActiveTab={setActiveTab} />
 
-      <div className="px-6">
+      <div className="mt-8">
         {activeTab === 'Dashboard' && <Dashboard state={state} symbol={currentSymbol} />}
         {activeTab === 'Expenses' && <Expenses state={state} symbol={currentSymbol} onAddTransaction={handleAddTransaction} />}
         {activeTab === 'Savings' && <Savings state={state} symbol={currentSymbol} onUpdateSavings={handleUpdateSavings} onUnlock={handleUnlock} />}

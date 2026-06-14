@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState, useEffect } from "react";
@@ -8,6 +7,7 @@ import { Progress } from "@/components/ui/progress";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { formatCurrency } from "@/lib/utils-finance";
+import { ShieldCheck, Zap } from "lucide-react";
 
 interface SavingsProps {
   state: AppState;
@@ -46,87 +46,102 @@ export function Savings({ state, symbol, onUpdateSavings, onUnlock }: SavingsPro
   const totalSaved = state.flexibleSavings + state.lockedSavings;
 
   return (
-    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <Card className="glass-card rainbow-shimmer">
+    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-700">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <Card className="flat-card">
           <CardHeader>
-            <CardTitle className="flex justify-between items-center">
-              <span>🔄 Flexible Savings</span>
-              <span className="text-xl font-bold">{formatCurrency(state.flexibleSavings, symbol)}</span>
+            <CardTitle className="flex justify-between items-center text-lg">
+              <span className="flex items-center gap-2"><Zap className="w-5 h-5 text-amber-500" /> Flexible Stash</span>
+              <span className="text-2xl font-black">{formatCurrency(state.flexibleSavings, symbol)}</span>
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
+          <CardContent className="space-y-6">
             <div className="space-y-2">
-              <div className="flex justify-between text-xs text-white/60">
-                <span>Progress to $500 goal</span>
+              <div className="flex justify-between text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                <span>Goal: $500</span>
                 <span>{Math.min(100, Math.round((state.flexibleSavings / 500) * 100))}%</span>
               </div>
-              <Progress value={(state.flexibleSavings / 500) * 100} className="h-3 bg-white/10" />
+              <Progress value={(state.flexibleSavings / 500) * 100} className="h-2 bg-muted" />
             </div>
-            <p className="text-sm text-white/60 italic">Emergency stash! Withdraw anytime for snacks or games.</p>
-            <div className="flex gap-2">
-              <Input type="number" placeholder="0.00" value={flexAmount} onChange={e => setFlexAmount(e.target.value)} className="bg-white/10 border-white/20" />
-              <Button onClick={() => onUpdateSavings('flex', parseFloat(flexAmount), 'deposit')} className="bg-teal-500 hover:bg-teal-600">Save</Button>
-              <Button onClick={() => onUpdateSavings('flex', parseFloat(flexAmount), 'withdraw')} variant="outline" className="border-white/20">Take</Button>
+            <div className="space-y-4">
+              <div className="flex gap-2">
+                <Input type="number" placeholder="0.00" value={flexAmount} onChange={e => setFlexAmount(e.target.value)} className="bg-muted border-none rounded-xl" />
+                <Button onClick={() => onUpdateSavings('flex', parseFloat(flexAmount), 'deposit')} className="bg-foreground text-white pill-button px-6">Save</Button>
+                <Button onClick={() => onUpdateSavings('flex', parseFloat(flexAmount), 'withdraw')} variant="outline" className="pill-button px-6">Withdraw</Button>
+              </div>
+              <p className="text-xs text-muted-foreground font-medium leading-relaxed">
+                Money for movies, games, or hanging out. Access it instantly.
+              </p>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="glass-card rainbow-shimmer">
+        <Card className="flat-card border-primary/20">
           <CardHeader>
-            <CardTitle className="flex justify-between items-center">
-              <span>🔒 Locked Savings</span>
-              <span className="text-xl font-bold">{formatCurrency(state.lockedSavings, symbol)}</span>
+            <CardTitle className="flex justify-between items-center text-lg">
+              <span className="flex items-center gap-2"><ShieldCheck className="w-5 h-5 text-primary" /> The Vault</span>
+              <span className="text-2xl font-black">{formatCurrency(state.lockedSavings, symbol)}</span>
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
+          <CardContent className="space-y-6">
             <div className="space-y-2">
-              <div className="flex justify-between text-xs text-white/60">
-                <span>Progress to $1000 goal</span>
+              <div className="flex justify-between text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                <span>Goal: $1,000</span>
                 <span>{Math.min(100, Math.round((state.lockedSavings / 1000) * 100))}%</span>
               </div>
-              <Progress value={(state.lockedSavings / 1000) * 100} className="h-3 bg-white/10" />
+              <Progress value={(state.lockedSavings / 1000) * 100} className="h-2 bg-muted" />
             </div>
             {state.lockedUntil ? (
-              <div className="p-4 rounded-lg bg-white/5 border border-white/10 text-center">
+              <div className="p-6 rounded-2xl bg-primary/5 text-center">
                 {timeLeft === 'ready' ? (
-                  <div className="space-y-2">
-                    <p className="text-teal-400 font-bold">✅ Ready to unlock with 5% bonus!</p>
-                    <Button onClick={onUnlock} className="bg-teal-500 w-full">Claim Bonus & Unlock</Button>
+                  <div className="space-y-3">
+                    <p className="text-primary font-bold">Bonus Ready! +5% Added</p>
+                    <Button onClick={onUnlock} className="bg-primary text-white w-full pill-button py-6">Claim & Unlock</Button>
                   </div>
                 ) : (
-                  <p className="text-white/60">🔒 Locked for {timeLeft || 'calculating...'}</p>
+                  <p className="text-muted-foreground font-bold flex items-center justify-center gap-2">
+                    Locked for {timeLeft || '...'}
+                  </p>
                 )}
               </div>
             ) : (
               <div className="space-y-4">
-                <p className="text-sm text-white/60 italic">The Vault! Lock for 30 days to earn a massive 5% bonus.</p>
                 <div className="flex gap-2">
-                  <Input type="number" placeholder="0.00" value={lockedAmount} onChange={e => setLockedAmount(e.target.value)} className="bg-white/10 border-white/20" />
-                  <Button onClick={() => onUpdateSavings('locked', parseFloat(lockedAmount), 'lock')} className="bg-coral-500 hover:bg-coral-600 w-full">Lock & Save 🔐</Button>
+                  <Input type="number" placeholder="0.00" value={lockedAmount} onChange={e => setLockedAmount(e.target.value)} className="bg-muted border-none rounded-xl" />
+                  <Button onClick={() => onUpdateSavings('locked', parseFloat(lockedAmount), 'lock')} className="bg-primary text-white w-full pill-button py-6 shadow-lg shadow-primary/20">Lock & Earn 5%</Button>
                 </div>
+                <p className="text-xs text-muted-foreground font-medium leading-relaxed">
+                  Lock money for 30 days to build discipline and earn a premium bonus.
+                </p>
               </div>
             )}
           </CardContent>
         </Card>
       </div>
 
-      <Card className="glass-card p-6">
-        <h3 className="text-xl font-bold mb-6">🎯 Savings Goals</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <div className="space-y-2">
-            <div className="flex justify-between text-sm font-medium">
-              <span>🚑 Emergency Fund</span>
-              <span>{formatCurrency(totalSaved, symbol)} / {formatCurrency(2000, symbol)}</span>
+      <Card className="flat-card p-8">
+        <h3 className="text-xl font-extrabold mb-8 tracking-tight">Active Savings Goals</h3>
+        <div className="space-y-8">
+          <div className="space-y-3">
+            <div className="flex justify-between items-end">
+              <div>
+                <p className="font-bold text-foreground">Future Fund</p>
+                <p className="text-xs text-muted-foreground font-medium">Big dreams start small.</p>
+              </div>
+              <span className="text-sm font-bold">{formatCurrency(totalSaved, symbol)} / {formatCurrency(2000, symbol)}</span>
             </div>
-            <Progress value={(totalSaved / 2000) * 100} className="h-4 bg-white/10" />
+            <Progress value={(totalSaved / 2000) * 100} className="h-4 bg-muted" />
           </div>
-          <div className="space-y-2">
-            <div className="flex justify-between text-sm font-medium">
-              <span>💎 Dream Purchase</span>
-              <span>{formatCurrency(totalSaved, symbol)} / {formatCurrency(1500, symbol)}</span>
+          
+          <div className="space-y-3">
+            <div className="flex justify-between items-end">
+              <div>
+                <p className="font-bold text-foreground">Gadget Goal</p>
+                <p className="text-xs text-muted-foreground font-medium">Almost there!</p>
+              </div>
+              <span className="text-sm font-bold">{formatCurrency(totalSaved, symbol)} / {formatCurrency(1500, symbol)}</span>
             </div>
-            <Progress value={(totalSaved / 1500) * 100} className="h-4 bg-white/10" />
+            <Progress value={(totalSaved / 1500) * 100} className="h-4 bg-muted" />
           </div>
         </div>
       </Card>

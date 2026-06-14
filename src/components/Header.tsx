@@ -1,20 +1,24 @@
-
 "use client";
 
 import { Badge } from "@/components/ui/badge";
 
 export function Header({ level }: { level: string }) {
   return (
-    <header className="sticky top-0 z-40 w-full glass-card border-none rounded-none backdrop-blur-xl bg-white/10 px-6 py-4 flex justify-between items-center">
-      <div className="flex items-center gap-2">
-        <span className="text-2xl floating-emoji">💰</span>
-        <h1 className="text-2xl font-bold bg-gradient-to-r from-teal-400 to-coral-400 bg-clip-text text-transparent animate-pulse font-headline">
-          Teen Track
+    <header className="py-8 flex justify-between items-center">
+      <div className="flex items-center gap-3">
+        <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center text-white font-bold text-xl">
+          T
+        </div>
+        <h1 className="text-2xl font-extrabold tracking-tight text-foreground">
+          TeenTrack
         </h1>
       </div>
-      <Badge className="px-4 py-2 text-sm font-semibold rounded-full bg-gradient-to-r from-orange-400 to-red-500 border-none shadow-lg animate-bounce-custom">
-        {level}
-      </Badge>
+      <div className="flex items-center gap-2">
+        <span className="text-sm font-medium text-muted-foreground mr-2">Level</span>
+        <Badge variant="secondary" className="px-4 py-1.5 rounded-full text-xs font-bold bg-white border-border shadow-sm">
+          {level}
+        </Badge>
+      </div>
     </header>
   );
 }

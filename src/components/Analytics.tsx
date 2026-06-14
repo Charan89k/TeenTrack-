@@ -1,78 +1,86 @@
-
 "use client";
 
 import { AppState, CATEGORY_EMOJIS, CATEGORIES } from "@/lib/types";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { formatCurrency } from "@/lib/utils-finance";
+import { Award, TrendingUp, Calendar, Hash } from "lucide-react";
 
 const ACHIEVEMENTS = [
-  { id: 'first_tx', title: '🎯 First Transaction!', desc: 'Logged your very first activity.', icon: '🎯' },
-  { id: 'five_exp', title: '💸 5 Expenses Tracked!', desc: 'Keeping a close eye on your spending.', icon: '💸' },
-  { id: 'three_inc', title: '💰 3 Income Sources!', desc: 'Diversifying your wealth!', icon: '💰' },
-  { id: 'flex_saver', title: '💰 $100 Flexible Saver!', desc: 'Building a rainy day fund.', icon: '💰' },
-  { id: 'locked_champ', title: '🔒 Locked Savings Champion!', desc: 'Reached $100 in the Vault.', icon: '🔒' },
-  { id: 'balance_keeper', title: '💎 Balance Keeper!', desc: 'Total balance over $1000!', icon: '💎' },
+  { id: 'first_tx', title: 'Starter', desc: 'Log your first transaction', icon: '🎯' },
+  { id: 'five_exp', title: 'Tracker', desc: '5 Expenses logged', icon: '💸' },
+  { id: 'three_inc', title: 'Earner', desc: '3 Income sources', icon: '💰' },
+  { id: 'flex_saver', title: 'Stasher', desc: 'Save $100 in Stash', icon: '💎' },
+  { id: 'locked_champ', title: 'Disciplined', desc: 'Save $100 in Vault', icon: '🔒' },
+  { id: 'balance_keeper', title: 'Wealthy', desc: 'Balance over $1,000', icon: '👑' },
 ];
 
 export function Analytics({ state, symbol }: { state: AppState; symbol: string }) {
   const totalSpent = state.transactions.filter(t => t.type === 'expense').reduce((a, c) => a + c.amount, 0);
   const totalSaved = state.flexibleSavings + state.lockedSavings;
-  const incomeCount = state.transactions.filter(t => t.type === 'income').length;
   
-  // Daily Average
   const oldestDate = state.transactions.length > 0 ? Math.min(...state.transactions.map(t => t.timestamp)) : Date.now();
   const daysTracked = Math.max(1, Math.ceil((Date.now() - oldestDate) / (1000 * 60 * 60 * 24)));
   const dailyAvg = totalSpent / daysTracked;
 
-  // Top Category
   const cats = CATEGORIES.map(cat => ({
     cat,
     total: state.transactions.filter(t => t.category === cat).reduce((a, c) => a + c.amount, 0)
   })).sort((a, b) => b.total - a.total);
-  const topCat = cats[0]?.total > 0 ? cats[0].cat : 'None yet';
+  const topCat = cats[0]?.total > 0 ? cats[0].cat : '—';
 
-  // Saving Rate
   const savingRate = (totalSaved / (totalSpent + totalSaved + 1)) * 100;
 
   return (
-    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card className="glass-card p-6 text-center space-y-2">
-          <p className="text-white/60 text-sm">Daily Average Spend</p>
-          <p className="text-3xl font-bold">{formatCurrency(dailyAvg, symbol)}</p>
+    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-700">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <Card className="flat-card p-6 flex flex-col items-center justify-center text-center">
+          <Calendar className="w-5 h-5 text-muted-foreground mb-3" />
+          <p className="text-muted-foreground font-bold text-[10px] uppercase tracking-widest">Daily Spend</p>
+          <p className="text-2xl font-black mt-1">{formatCurrency(dailyAvg, symbol)}</p>
         </Card>
-        <Card className="glass-card p-6 text-center space-y-2">
-          <p className="text-white/60 text-sm">Top Category</p>
-          <p className="text-2xl font-bold">{topCat !== 'None yet' ? `${CATEGORY_EMOJIS[topCat]} ${topCat}` : topCat}</p>
+        <Card className="flat-card p-6 flex flex-col items-center justify-center text-center">
+          <TrendingUp className="w-5 h-5 text-muted-foreground mb-3" />
+          <p className="text-muted-foreground font-bold text-[10px] uppercase tracking-widest">Top Cat</p>
+          <p className="text-2xl font-black mt-1">{topCat !== '—' ? `${CATEGORY_EMOJIS[topCat]} ${topCat}` : topCat}</p>
         </Card>
-        <Card className="glass-card p-6 text-center space-y-2">
-          <p className="text-white/60 text-sm">Saving Rate</p>
-          <p className="text-3xl font-bold text-teal-400">{savingRate.toFixed(1)}%</p>
+        <Card className="flat-card p-6 flex flex-col items-center justify-center text-center">
+          <Hash className="w-5 h-5 text-muted-foreground mb-3" />
+          <p className="text-muted-foreground font-bold text-[10px] uppercase tracking-widest">Savings Rate</p>
+          <p className="text-2xl font-black mt-1 text-primary">{savingRate.toFixed(1)}%</p>
+        </Card>
+        <Card className="flat-card p-6 flex flex-col items-center justify-center text-center">
+          <Award className="w-5 h-5 text-muted-foreground mb-3" />
+          <p className="text-muted-foreground font-bold text-[10px] uppercase tracking-widest">Rewards</p>
+          <p className="text-2xl font-black mt-1">{state.unlockedAchievements.length} / 6</p>
         </Card>
       </div>
 
-      <Card className="glass-card">
-        <CardHeader>
-          <CardTitle>🏆 Achievements</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {ACHIEVEMENTS.map(ach => {
-              const isUnlocked = state.unlockedAchievements.includes(ach.id);
-              return (
-                <div key={ach.id} className={`p-4 rounded-xl border transition-all duration-500 ${isUnlocked ? 'glass-card bg-white/10 border-white/20' : 'bg-black/20 border-white/5 opacity-40 grayscale'}`}>
-                  <div className="flex items-center gap-3">
-                    <span className="text-3xl">{ach.icon}</span>
-                    <div>
-                      <h4 className="font-bold text-sm">{ach.title}</h4>
-                      <p className="text-xs text-white/60">{ach.desc}</p>
-                    </div>
+      <Card className="flat-card p-8">
+        <div className="flex items-center justify-between mb-8">
+          <h3 className="text-xl font-extrabold tracking-tight">Milestones</h3>
+          <p className="text-sm font-bold text-muted-foreground">{state.unlockedAchievements.length} unlocked</p>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {ACHIEVEMENTS.map(ach => {
+            const isUnlocked = state.unlockedAchievements.includes(ach.id);
+            return (
+              <div key={ach.id} className={cn(
+                "p-6 rounded-2xl border transition-all duration-300",
+                isUnlocked 
+                  ? "bg-white border-primary shadow-sm ring-1 ring-primary/20" 
+                  : "bg-muted/30 border-dashed border-muted-foreground/20 opacity-60 grayscale"
+              )}>
+                <div className="flex items-start gap-4">
+                  <span className="text-3xl">{ach.icon}</span>
+                  <div>
+                    <h4 className="font-extrabold text-sm text-foreground">{ach.title}</h4>
+                    <p className="text-xs text-muted-foreground font-medium mt-1 leading-relaxed">{ach.desc}</p>
                   </div>
                 </div>
-              );
-            })}
-          </div>
-        </CardContent>
+              </div>
+            );
+          })}
+        </div>
       </Card>
     </div>
   );

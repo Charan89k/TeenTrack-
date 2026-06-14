@@ -1,8 +1,8 @@
-
 "use client";
 
 import { CURRENCIES } from "@/lib/types";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Globe } from "lucide-react";
 
 interface CurrencySelectorProps {
   value: string;
@@ -11,14 +11,17 @@ interface CurrencySelectorProps {
 
 export function CurrencySelector({ value, onChange }: CurrencySelectorProps) {
   return (
-    <div className="fixed bottom-4 right-4 z-50">
+    <div className="fixed bottom-6 right-6 z-50">
       <Select value={value} onValueChange={onChange}>
-        <SelectTrigger className="w-[80px] glass-card rounded-full border-white/20 bg-black/20 backdrop-blur-md">
-          <SelectValue placeholder="Currency" />
+        <SelectTrigger className="w-[100px] h-12 bg-white border border-border rounded-full shadow-lg font-bold text-sm">
+          <div className="flex items-center gap-2">
+            <Globe className="w-4 h-4 text-primary" />
+            <SelectValue placeholder="USD" />
+          </div>
         </SelectTrigger>
-        <SelectContent className="glass-card bg-black/80 border-white/20 text-white">
+        <SelectContent align="end" className="rounded-2xl border-border shadow-xl">
           {CURRENCIES.map((c) => (
-            <SelectItem key={c.code} value={c.code} className="hover:bg-white/10 focus:bg-white/10">
+            <SelectItem key={c.code} value={c.code} className="py-2.5 font-semibold">
               {c.symbol} {c.code}
             </SelectItem>
           ))}

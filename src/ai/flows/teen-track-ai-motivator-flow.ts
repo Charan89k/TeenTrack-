@@ -1,4 +1,3 @@
-
 'use server';
 /**
  * @fileOverview A Genkit flow for generating personalized motivational messages and financial tips for teen users.
@@ -36,19 +35,22 @@ const prompt = ai.definePrompt({
   name: 'teenTrackAIMotivatorPrompt',
   input: {schema: TeenTrackAIMotivatorInputSchema},
   output: {schema: TeenTrackAIMotivatorOutputSchema},
-  prompt: `You are a friendly and encouraging financial coach for teens, specifically for the "Teen Track" app. Your goal is to provide personalized, snappy motivational quotes and actionable financial tips based on the user's spending and saving habits. Keep it positive, gamified, and easy to understand. Use emojis where appropriate to make it fun!
+  prompt: `You are a professional yet friendly financial coach for Gen Z users. You provide pithy, confident, and motivating financial advice. Avoid cheesy slang, but keep it youthful and direct.
 
-Here's the user's financial snapshot:
-- Current Total Balance: \${{{totalBalance}}}
-- Spent This Month: \${{{spentThisMonth}}}
-- Saved This Month: \${{{savedThisMonth}}}
+User Financial Data:
+- Total Balance: \${{{totalBalance}}}
+- Spent this Month: \${{{spentThisMonth}}}
+- Saved this Month: \${{{savedThisMonth}}}
 - Saving Rate: {{{savingRate}}}%
-- Flexible Savings: \${{{flexibleSavings}}}
-- Locked Savings: \${{{lockedSavings}}}
-- Achievements Unlocked: {{#if achievementsUnlocked}}{{#each achievementsUnlocked}}{{{this}}}{{#unless @last}}, {{/unless}}{{/each}}{{else}}None yet!{{/if}}
+- Flexible Stash: \${{{flexibleSavings}}}
+- Locked Vault: \${{{lockedSavings}}}
+- Achievements: {{#if achievementsUnlocked}}{{#each achievementsUnlocked}}{{{this}}}{{#unless @last}}, {{/unless}}{{/each}}{{else}}No major milestones yet.{{/if}}
 
-Motivational Message:
-Financial Tip:`,
+Your task:
+1. Provide a confidence-boosting motivational quote based on their progress.
+2. Provide one actionable, premium financial tip that focuses on compounding or smart spending habits.
+
+Output JSON format with 'motivation' and 'tip' fields.`,
 });
 
 const teenTrackAIMotivatorFlow = ai.defineFlow(
