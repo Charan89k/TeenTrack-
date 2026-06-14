@@ -2,16 +2,26 @@
 "use client";
 
 import { useState } from "react";
-import { CATEGORY_EMOJIS, CATEGORIES, AppState } from "@/lib/types";
+import { AppState } from "@/lib/types";
 import { Card } from "@/components/ui/card";
-import { formatCurrency } from "@/lib/utils-finance";
-import { ArrowUpRight, ArrowDownRight, Filter } from "lucide-react";
+import { formatCurrency, getAutoEmoji } from "@/lib/utils-finance";
+import { ArrowUpRight, ArrowDownRight, Filter, PencilLine, Check } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 type ViewCriteria = "month" | "all";
 
-export function Dashboard({ state, symbol }: { state: AppState; symbol: string }) {
+interface DashboardProps {
+  state: AppState;
+  symbol: string;
+  onUpdateCategory: (index: number, newName: string) => void;
+}
+
+export function Dashboard({ state, symbol, onUpdateCategory }: DashboardProps) {
   const [criteria, setCriteria] = useState<ViewCriteria>("month");
+  const [editingIndex, setEditingIndex] = useState<number | null>(null);
+  const [editValue, setEditValue] = useState("");
 
   const now = new Date();
   const currentMonth = now.getMonth();
@@ -31,12 +41,24 @@ export function Dashboard({ state, symbol }: { state: AppState; symbol: string }
     .filter(t => t.type === 'income')
     .reduce((acc, curr) => acc + curr.amount, 0);
 
-  const categoryTotals = CATEGORIES.reduce((acc, cat) => {
-    acc[cat] = state.transactions
+  const categoryTotals = state.categories.reduce((acc, cat) => {
+    acc[cat] = filteredTransactions
       .filter(t => t.type === 'expense' && t.category === cat)
       .reduce((sum, t) => sum + t.amount, 0);
     return acc;
   }, {} as Record<string, number>);
+
+  const handleStartEdit = (index: number, value: string) => {
+    setEditingIndex(index);
+    setEditValue(value);
+  };
+
+  const handleSaveEdit = (index: number) => {
+    if (editValue.trim()) {
+      onUpdateCategory(index, editValue.trim());
+    }
+    setEditingIndex(null);
+  };
 
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-700">
@@ -45,7 +67,7 @@ export function Dashboard({ state, symbol }: { state: AppState; symbol: string }
         <div className="flex items-center gap-2">
           <Filter className="w-4 h-4 text-muted-foreground" />
           <Select value={criteria} onValueChange={(v: ViewCriteria) => setCriteria(v)}>
-            <SelectTrigger className="w-[140px] h-9 rounded-full bg-white border-border text-xs font-bold uppercase tracking-wider">
+            <SelectTrigger className="w-[140px] h-9 rounded-full bg-white border-border text-xs font-bold uppercase tracking-wider focus:ring-primary/20">
               <SelectValue placeholder="Period" />
             </SelectTrigger>
             <SelectContent className="rounded-2xl">
@@ -74,8 +96,8 @@ export function Dashboard({ state, symbol }: { state: AppState; symbol: string }
           </div>
         </Card>
 
-        <Card className="flat-card p-8 bg-primary text-white flex flex-col justify-between">
-          <div>
+        <Card className="flat-card p-8 bg-primary text-white flex flex-col justify-between overflow-hidden relative">
+          <div className="relative z-10">
             <p className="text-white/70 font-medium text-sm uppercase tracking-wider mb-2">Saved {criteria === "month" ? "This Month" : "Total"}</p>
             <h3 className="text-4xl font-bold">
               {formatCurrency(
@@ -85,28 +107,60 @@ export function Dashboard({ state, symbol }: { state: AppState; symbol: string }
               )}
             </h3>
           </div>
-          <p className="text-sm text-white/60 mt-4 leading-relaxed">
+          <p className="text-sm text-white/60 mt-4 leading-relaxed relative z-10">
             {criteria === "month" 
-              ? "Your saving rate is up 24% from last month. Keep it up!" 
-              : "Consistently tracking your income builds massive wealth habits."}
+              ? "Consistency builds wealth habits. You're doing great!" 
+              : "Tracking your stash over time is the ultimate flex."}
           </p>
+          <div className="absolute top-[-20px] right-[-20px] w-32 h-32 bg-white/10 rounded-full blur-3xl pointer-events-none" />
         </Card>
       </div>
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
-        {CATEGORIES.map((cat) => (
-          <Card key={cat} className="flat-card p-6 group hover:border-primary/50 cursor-pointer">
-            <div className="flex justify-between items-start mb-4">
-              <span className="text-2xl p-2 bg-muted rounded-xl group-hover:bg-primary/10 transition-colors">
-                {CATEGORY_EMOJIS[cat]}
-              </span>
-              <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">{cat}</span>
-            </div>
-            <p className="text-xl font-extrabold text-foreground">
-              {formatCurrency(categoryTotals[cat] || 0, symbol, state.currency)}
-            </p>
-          </Card>
-        ))}
+        {state.categories.map((cat, index) => {
+          const isEditing = editingIndex === index;
+          return (
+            <Card key={index} className="flat-card p-6 group hover:border-primary/50 relative">
+              <div className="flex justify-between items-start mb-4">
+                <span className="text-2xl p-2 bg-muted rounded-xl group-hover:bg-primary/10 transition-colors">
+                  {getAutoEmoji(isEditing ? editValue : cat)}
+                </span>
+                {!isEditing ? (
+                  <button 
+                    onClick={() => handleStartEdit(index, cat)}
+                    className="opacity-0 group-hover:opacity-100 transition-opacity p-1.5 hover:bg-muted rounded-full text-muted-foreground"
+                  >
+                    <PencilLine className="w-3.5 h-3.5" />
+                  </button>
+                ) : (
+                  <button 
+                    onClick={() => handleSaveEdit(index)}
+                    className="p-1.5 bg-primary/10 text-primary rounded-full"
+                  >
+                    <Check className="w-3.5 h-3.5" />
+                  </button>
+                )}
+              </div>
+              
+              {isEditing ? (
+                <Input 
+                  value={editValue} 
+                  onChange={(e) => setEditValue(e.target.value)}
+                  onBlur={() => handleSaveEdit(index)}
+                  onKeyDown={(e) => e.key === 'Enter' && handleSaveEdit(index)}
+                  className="h-7 text-xs font-bold uppercase tracking-wider mb-2 p-1 border-primary"
+                  autoFocus
+                />
+              ) : (
+                <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-2 truncate">{cat}</p>
+              )}
+              
+              <p className="text-xl font-extrabold text-foreground">
+                {formatCurrency(categoryTotals[cat] || 0, symbol, state.currency)}
+              </p>
+            </Card>
+          );
+        })}
       </div>
     </div>
   );

@@ -25,6 +25,7 @@ const INITIAL_STATE: AppState = {
   lockedUntil: null,
   currency: 'USD',
   unlockedAchievements: ['first_tx'],
+  categories: ['Shopping', 'Gaming', 'Food', 'Miscellaneous'],
 };
 
 export default function TeenTrackApp() {
@@ -34,10 +35,13 @@ export default function TeenTrackApp() {
   const { toast } = useToast();
 
   useEffect(() => {
-    const saved = localStorage.getItem('teenTrackState_v4');
+    const saved = localStorage.getItem('teenTrackState_v5');
     if (saved) {
       try {
-        setState(JSON.parse(saved));
+        const parsed = JSON.parse(saved);
+        // Migration: Ensure categories exist
+        if (!parsed.categories) parsed.categories = INITIAL_STATE.categories;
+        setState(parsed);
       } catch (e) {
         console.error("Failed to load state", e);
       }
@@ -47,7 +51,7 @@ export default function TeenTrackApp() {
 
   useEffect(() => {
     if (hydrated) {
-      localStorage.setItem('teenTrackState_v4', JSON.stringify(state));
+      localStorage.setItem('teenTrackState_v5', JSON.stringify(state));
       checkAchievements();
     }
   }, [state, hydrated]);
@@ -106,7 +110,7 @@ export default function TeenTrackApp() {
     setState(prev => {
       let next = { ...prev };
       const date = new Date().toISOString().split('T')[0];
-      const category = type === 'flex' ? 'Flexible Stash' : 'The Vault';
+      const categoryLabel = type === 'flex' ? 'Flexible Stash' : 'The Vault';
 
       if (action === 'deposit' || action === 'lock') {
         if (prev.totalBalance < amount) {
@@ -120,13 +124,12 @@ export default function TeenTrackApp() {
           next.lockedUntil = Date.now() + (30 * 24 * 60 * 60 * 1000);
         }
         
-        // Record deposit as a "Saving" income transaction for the dashboard
         const saveTx: Transaction = {
           id: Math.random().toString(36).substr(2, 9),
           amount,
           type: 'income',
           category: 'Other',
-          description: `Saved to ${category}`,
+          description: `Saved to ${categoryLabel}`,
           date,
           timestamp: Date.now(),
         };
@@ -135,20 +138,19 @@ export default function TeenTrackApp() {
       } else if (action === 'withdraw') {
         const currentBalance = type === 'flex' ? prev.flexibleSavings : prev.lockedSavings;
         if (currentBalance < amount) {
-          toast({ title: "Insufficient savings", description: `Not enough in ${category}.`, variant: "destructive" });
+          toast({ title: "Insufficient savings", description: `Not enough in ${categoryLabel}.`, variant: "destructive" });
           return prev;
         }
         if (type === 'flex') next.flexibleSavings -= amount;
         else next.lockedSavings -= amount;
         next.totalBalance += amount;
         
-        // Record withdrawal as an expense from savings
         const withdrawTx: Transaction = {
           id: Math.random().toString(36).substr(2, 9),
           amount,
           type: 'expense',
           category: 'Other',
-          description: `Withdrew from ${category}`,
+          description: `Withdrew from ${categoryLabel}`,
           date,
           timestamp: Date.now(),
         };
@@ -167,6 +169,14 @@ export default function TeenTrackApp() {
   const handleUpdateGoals = (flexibleGoal: number, lockedGoal: number) => {
     setState(prev => ({ ...prev, flexibleGoal, lockedGoal }));
     toast({ title: "Goals Updated", description: "Your savings targets have been saved." });
+  };
+
+  const handleUpdateCategory = (index: number, newName: string) => {
+    setState(prev => {
+      const newCategories = [...prev.categories];
+      newCategories[index] = newName;
+      return { ...prev, categories: newCategories };
+    });
   };
 
   const handleUnlock = () => {
@@ -223,8 +233,20 @@ export default function TeenTrackApp() {
       <Navigation activeTab={activeTab} setActiveTab={setActiveTab} />
 
       <div className="mt-8">
-        {activeTab === 'Dashboard' && <Dashboard state={state} symbol={currentSymbol} />}
-        {activeTab === 'Expenses' && <Expenses state={state} symbol={currentSymbol} onAddTransaction={handleAddTransaction} />}
+        {activeTab === 'Dashboard' && (
+          <Dashboard 
+            state={state} 
+            symbol={currentSymbol} 
+            onUpdateCategory={handleUpdateCategory} 
+          />
+        )}
+        {activeTab === 'Expenses' && (
+          <Expenses 
+            state={state} 
+            symbol={currentSymbol} 
+            onAddTransaction={handleAddTransaction} 
+          />
+        )}
         {activeTab === 'Savings' && (
           <Savings 
             state={state} 

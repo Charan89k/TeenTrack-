@@ -1,9 +1,9 @@
 
 "use client";
 
-import { AppState, CATEGORY_EMOJIS, CATEGORIES } from "@/lib/types";
+import { AppState, CATEGORY_EMOJIS } from "@/lib/types";
 import { Card } from "@/components/ui/card";
-import { formatCurrency } from "@/lib/utils-finance";
+import { formatCurrency, getAutoEmoji } from "@/lib/utils-finance";
 import { Award, TrendingUp, Calendar, Hash } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -24,7 +24,7 @@ export function Analytics({ state, symbol }: { state: AppState; symbol: string }
   const daysTracked = Math.max(1, Math.ceil((Date.now() - oldestDate) / (1000 * 60 * 60 * 24)));
   const dailyAvg = totalSpent / daysTracked;
 
-  const cats = CATEGORIES.map(cat => ({
+  const cats = state.categories.map(cat => ({
     cat,
     total: state.transactions.filter(t => t.category === cat).reduce((a, c) => a + c.amount, 0)
   })).sort((a, b) => b.total - a.total);
@@ -43,7 +43,7 @@ export function Analytics({ state, symbol }: { state: AppState; symbol: string }
         <Card className="flat-card p-6 flex flex-col items-center justify-center text-center">
           <TrendingUp className="w-5 h-5 text-muted-foreground mb-3" />
           <p className="text-muted-foreground font-bold text-[10px] uppercase tracking-widest">Top Cat</p>
-          <p className="text-2xl font-black mt-1">{topCat !== '—' ? `${CATEGORY_EMOJIS[topCat]} ${topCat}` : topCat}</p>
+          <p className="text-2xl font-black mt-1">{topCat !== '—' ? `${getAutoEmoji(topCat)} ${topCat}` : topCat}</p>
         </Card>
         <Card className="flat-card p-6 flex flex-col items-center justify-center text-center">
           <Hash className="w-5 h-5 text-muted-foreground mb-3" />

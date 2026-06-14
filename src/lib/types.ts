@@ -21,9 +21,10 @@ export type AppState = {
   lockedUntil: number | null;
   currency: string;
   unlockedAchievements: string[];
+  categories: string[];
 };
 
-export const CATEGORIES = ['Shopping', 'Gaming', 'Food', 'Miscellaneous'] as const;
+export const DEFAULT_CATEGORIES = ['Shopping', 'Gaming', 'Food', 'Miscellaneous'] as const;
 export const INCOME_SOURCES = ['Allowance', 'Gift Money', 'Part-time Job', 'Chores', 'Other'] as const;
 
 export const CATEGORY_EMOJIS: Record<string, string> = {

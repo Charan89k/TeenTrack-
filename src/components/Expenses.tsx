@@ -2,13 +2,13 @@
 "use client";
 
 import { useState } from "react";
-import { AppState, INCOME_SOURCES, CATEGORIES, CATEGORY_EMOJIS } from "@/lib/types";
+import { AppState, INCOME_SOURCES, CATEGORY_EMOJIS } from "@/lib/types";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { formatCurrency } from "@/lib/utils-finance";
+import { formatCurrency, getAutoEmoji } from "@/lib/utils-finance";
 import { Loader2, Plus, Minus, History } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -20,7 +20,7 @@ interface ExpensesProps {
 
 export function Expenses({ state, symbol, onAddTransaction }: ExpensesProps) {
   const [incomeForm, setIncomeForm] = useState({ amount: '', source: 'Allowance', desc: '', date: new Date().toISOString().split('T')[0] });
-  const [expenseForm, setExpenseForm] = useState({ amount: '', category: 'Shopping', desc: '', date: new Date().toISOString().split('T')[0] });
+  const [expenseForm, setExpenseForm] = useState({ amount: '', category: state.categories[0], desc: '', date: new Date().toISOString().split('T')[0] });
   const [isSubmitting, setIsSubmitting] = useState<'income' | 'expense' | null>(null);
 
   const handleIncomeSubmit = async (e: React.FormEvent) => {
@@ -40,7 +40,7 @@ export function Expenses({ state, symbol, onAddTransaction }: ExpensesProps) {
     setIsSubmitting('expense');
     await new Promise(r => setTimeout(r, 600));
     onAddTransaction(amount, 'expense', expenseForm.category, expenseForm.desc, expenseForm.date);
-    setExpenseForm({ amount: '', category: 'Shopping', desc: '', date: new Date().toISOString().split('T')[0] });
+    setExpenseForm({ amount: '', category: state.categories[0], desc: '', date: new Date().toISOString().split('T')[0] });
     setIsSubmitting(null);
   };
 
@@ -111,7 +111,7 @@ export function Expenses({ state, symbol, onAddTransaction }: ExpensesProps) {
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      {CATEGORIES.map(c => <SelectItem key={c} value={c}>{CATEGORY_EMOJIS[c]} {c}</SelectItem>)}
+                      {state.categories.map(c => <SelectItem key={c} value={c}>{getAutoEmoji(c)} {c}</SelectItem>)}
                     </SelectContent>
                   </Select>
                 </div>
@@ -148,7 +148,7 @@ export function Expenses({ state, symbol, onAddTransaction }: ExpensesProps) {
               <div key={t.id} className="flex items-center justify-between p-6 hover:bg-muted/20 transition-colors">
                 <div className="flex items-center gap-4">
                   <div className="w-12 h-12 rounded-2xl bg-muted flex items-center justify-center text-2xl">
-                    {CATEGORY_EMOJIS[t.category]}
+                    {CATEGORY_EMOJIS[t.category] || getAutoEmoji(t.category)}
                   </div>
                   <div>
                     <p className="font-bold text-foreground">{t.category}</p>
