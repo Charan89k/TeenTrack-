@@ -31,7 +31,7 @@ export function getAutoEmoji(name: string): string {
   if (n.includes('travel') || n.includes('trip') || n.includes('flight') || n.includes('hotel') || n.includes('vacation')) return '✈️';
   if (n.includes('school') || n.includes('study') || n.includes('book') || n.includes('education') || n.includes('college')) return '📚';
   if (n.includes('gift') || n.includes('present') || n.includes('party')) return '🎁';
-  if (n.includes('bike') || n.includes('motorcycle') || n.includes('cycling') || n.includes('karizma')) return '🚲';
+  if (n.includes('bike') || n.includes('motorcycle') || n.includes('cycling') || n.includes('karizma')) return '🏍️';
   if (n.includes('car') || n.includes('drive') || n.includes('transport') || n.includes('uber') || n.includes('taxi')) return '🚗';
   if (n.includes('home') || n.includes('rent') || n.includes('house') || n.includes('flat')) return '🏠';
   if (n.includes('money') || n.includes('cash') || n.includes('bank') || n.includes('invest') || n.includes('crypto')) return '💰';
