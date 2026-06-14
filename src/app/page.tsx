@@ -142,19 +142,27 @@ export default function TeenTrackApp() {
 
   const currentSymbol = CURRENCIES.find(c => c.code === state.currency)?.symbol || '$';
 
-  const getMoneyLevel = () => {
-    const score = state.transactions.length + state.unlockedAchievements.length * 5;
-    if (score > 50) return "Master";
-    if (score > 20) return "Boss";
-    if (score > 5) return "Saver";
+  const getSpendLevel = () => {
+    const count = state.transactions.filter(t => t.type === 'expense').length;
+    if (count > 20) return "Budget Sage";
+    if (count > 10) return "Track Star";
+    if (count > 3) return "Pro";
     return "Apprentice";
+  };
+
+  const getSaveLevel = () => {
+    const total = state.flexibleSavings + state.lockedSavings;
+    if (total > 1000) return "Wealth Boss";
+    if (total > 500) return "Stash Legend";
+    if (total > 100) return "Builder";
+    return "Starter";
   };
 
   if (!hydrated) return <Loading />;
 
   return (
     <main className="min-h-screen max-w-5xl mx-auto pb-24 px-4 sm:px-6">
-      <Header level={getMoneyLevel()} />
+      <Header spendLevel={getSpendLevel()} saveLevel={getSaveLevel()} />
       <AIMotivator state={state} />
       
       <Navigation activeTab={activeTab} setActiveTab={setActiveTab} />

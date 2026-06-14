@@ -1,3 +1,4 @@
+
 "use client";
 
 import { AppState, CATEGORY_EMOJIS, CATEGORIES } from "@/lib/types";
