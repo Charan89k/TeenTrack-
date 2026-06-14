@@ -29,7 +29,7 @@ export function Analytics({ state, symbol }: { state: AppState; symbol: string }
   })).sort((a, b) => b.total - a.total);
   const topCat = cats[0]?.total > 0 ? cats[0].cat : '—';
 
-  const savingRate = (totalSaved / (totalSpent + totalSaved + 1)) * 100;
+  const savingRate = (totalSaved / (totalSpent + totalSaved + 0.01)) * 100;
 
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-700">

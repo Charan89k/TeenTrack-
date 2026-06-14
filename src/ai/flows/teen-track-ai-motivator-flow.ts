@@ -44,11 +44,12 @@ User Financial Data:
 - Saving Rate: {{{savingRate}}}%
 - Flexible Stash: {{{flexibleSavings}}}
 - Locked Vault: {{{lockedSavings}}}
-- Achievements Unlocked: {{#if achievementsUnlocked}}{{#each achievementsUnlocked}}{{{this}}}{{#unless @last}}, {{/unless}}{{/each}}{{else}}None yet{{/if}}
+- Achievements Count: {{{achievementsUnlocked.length}}}
 
-Your task:
+Instructions:
 1. Provide a confidence-boosting motivational quote based on their progress.
 2. Provide one actionable financial tip that focuses on smart habits.
+3. Be concise and use a high-energy, positive tone.
 
 Output JSON format with 'motivation' and 'tip' fields.`,
 });
