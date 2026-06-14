@@ -35,16 +35,16 @@ export function Dashboard({ state, symbol }: { state: AppState; symbol: string }
         <Card className="md:col-span-2 flat-card p-8 flex flex-col justify-center">
           <p className="text-muted-foreground font-medium text-sm mb-1 uppercase tracking-wider">Total Balance</p>
           <h2 className="text-5xl font-extrabold tracking-tight text-foreground">
-            {formatCurrency(state.totalBalance, symbol)}
+            {formatCurrency(state.totalBalance, symbol, state.currency)}
           </h2>
           <div className="flex gap-4 mt-6">
             <div className="flex items-center gap-1.5 text-sm font-semibold px-3 py-1 bg-green-50 text-green-600 rounded-full">
               <ArrowUpRight className="w-4 h-4" />
-              {formatCurrency(monthlySaved, symbol)} incoming
+              {formatCurrency(monthlySaved, symbol, state.currency)} incoming
             </div>
             <div className="flex items-center gap-1.5 text-sm font-semibold px-3 py-1 bg-red-50 text-red-600 rounded-full">
               <ArrowDownRight className="w-4 h-4" />
-              {formatCurrency(monthlySpent, symbol)} outgoing
+              {formatCurrency(monthlySpent, symbol, state.currency)} outgoing
             </div>
           </div>
         </Card>
@@ -52,7 +52,7 @@ export function Dashboard({ state, symbol }: { state: AppState; symbol: string }
         <Card className="flat-card p-8 bg-primary text-white flex flex-col justify-between">
           <div>
             <p className="text-white/70 font-medium text-sm uppercase tracking-wider mb-2">Saved this Month</p>
-            <h3 className="text-4xl font-bold">{formatCurrency(monthlySaved, symbol)}</h3>
+            <h3 className="text-4xl font-bold">{formatCurrency(monthlySaved, symbol, state.currency)}</h3>
           </div>
           <p className="text-sm text-white/60 mt-4 leading-relaxed">
             You're saving 24% more than last month. Keep it up!
@@ -70,7 +70,7 @@ export function Dashboard({ state, symbol }: { state: AppState; symbol: string }
               <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">{cat}</span>
             </div>
             <p className="text-xl font-extrabold text-foreground">
-              {formatCurrency(categoryTotals[cat] || 0, symbol)}
+              {formatCurrency(categoryTotals[cat] || 0, symbol, state.currency)}
             </p>
           </Card>
         ))}

@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState } from "react";
@@ -157,7 +156,7 @@ export function Expenses({ state, symbol, onAddTransaction }: ExpensesProps) {
                   </div>
                 </div>
                 <p className={cn("text-xl font-extrabold", t.type === 'income' ? 'text-green-600' : 'text-foreground')}>
-                  {t.type === 'income' ? '+' : '−'} {formatCurrency(t.amount, symbol)}
+                  {t.type === 'income' ? '+' : '−'} {formatCurrency(t.amount, symbol, state.currency)}
                 </p>
               </div>
             ))

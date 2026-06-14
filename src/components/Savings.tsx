@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState, useEffect } from "react";
@@ -83,13 +82,13 @@ export function Savings({ state, symbol, onUpdateSavings, onUpdateGoals, onUnloc
           <CardHeader>
             <CardTitle className="flex justify-between items-center text-lg">
               <span className="flex items-center gap-2"><Zap className="w-5 h-5 text-amber-500" /> Flexible Stash</span>
-              <span className="text-2xl font-black">{formatCurrency(state.flexibleSavings, symbol)}</span>
+              <span className="text-2xl font-black">{formatCurrency(state.flexibleSavings, symbol, state.currency)}</span>
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
             <div className="space-y-2">
               <div className="flex justify-between text-xs font-bold uppercase tracking-wider text-muted-foreground">
-                <span>Goal: {formatCurrency(state.flexibleGoal, symbol)}</span>
+                <span>Goal: {formatCurrency(state.flexibleGoal, symbol, state.currency)}</span>
                 <span>{Math.min(100, Math.round((state.flexibleSavings / state.flexibleGoal) * 100))}%</span>
               </div>
               <Progress value={(state.flexibleSavings / state.flexibleGoal) * 100} className="h-2 bg-muted" />
@@ -142,13 +141,13 @@ export function Savings({ state, symbol, onUpdateSavings, onUpdateGoals, onUnloc
           <CardHeader>
             <CardTitle className="flex justify-between items-center text-lg">
               <span className="flex items-center gap-2"><ShieldCheck className="w-5 h-5 text-primary" /> The Vault</span>
-              <span className="text-2xl font-black">{formatCurrency(state.lockedSavings, symbol)}</span>
+              <span className="text-2xl font-black">{formatCurrency(state.lockedSavings, symbol, state.currency)}</span>
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
             <div className="space-y-2">
               <div className="flex justify-between text-xs font-bold uppercase tracking-wider text-muted-foreground">
-                <span>Goal: {formatCurrency(state.lockedGoal, symbol)}</span>
+                <span>Goal: {formatCurrency(state.lockedGoal, symbol, state.currency)}</span>
                 <span>{Math.min(100, Math.round((state.lockedSavings / state.lockedGoal) * 100))}%</span>
               </div>
               <Progress value={(state.lockedSavings / state.lockedGoal) * 100} className="h-2 bg-muted" />
@@ -218,7 +217,7 @@ export function Savings({ state, symbol, onUpdateSavings, onUpdateGoals, onUnloc
                 <p className="font-bold text-foreground">Future Fund</p>
                 <p className="text-xs text-muted-foreground font-medium">Big dreams start small.</p>
               </div>
-              <span className="text-sm font-bold">{formatCurrency(totalSaved, symbol)} / {formatCurrency(2000, symbol)}</span>
+              <span className="text-sm font-bold">{formatCurrency(totalSaved, symbol, state.currency)} / {formatCurrency(2000, symbol, state.currency)}</span>
             </div>
             <Progress value={(totalSaved / 2000) * 100} className="h-4 bg-muted" />
           </div>
@@ -229,7 +228,7 @@ export function Savings({ state, symbol, onUpdateSavings, onUpdateGoals, onUnloc
                 <p className="font-bold text-foreground">Gadget Goal</p>
                 <p className="text-xs text-muted-foreground font-medium">Almost there!</p>
               </div>
-              <span className="text-sm font-bold">{formatCurrency(totalSaved, symbol)} / {formatCurrency(1500, symbol)}</span>
+              <span className="text-sm font-bold">{formatCurrency(totalSaved, symbol, state.currency)} / {formatCurrency(1500, symbol, state.currency)}</span>
             </div>
             <Progress value={(totalSaved / 1500) * 100} className="h-4 bg-muted" />
           </div>

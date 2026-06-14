@@ -1,4 +1,3 @@
-
 "use client";
 
 import { AppState, CATEGORY_EMOJIS, CATEGORIES } from "@/lib/types";
@@ -38,7 +37,7 @@ export function Analytics({ state, symbol }: { state: AppState; symbol: string }
         <Card className="flat-card p-6 flex flex-col items-center justify-center text-center">
           <Calendar className="w-5 h-5 text-muted-foreground mb-3" />
           <p className="text-muted-foreground font-bold text-[10px] uppercase tracking-widest">Daily Spend</p>
-          <p className="text-2xl font-black mt-1">{formatCurrency(dailyAvg, symbol)}</p>
+          <p className="text-2xl font-black mt-1">{formatCurrency(dailyAvg, symbol, state.currency)}</p>
         </Card>
         <Card className="flat-card p-6 flex flex-col items-center justify-center text-center">
           <TrendingUp className="w-5 h-5 text-muted-foreground mb-3" />
