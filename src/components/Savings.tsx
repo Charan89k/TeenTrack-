@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect } from "react";
@@ -58,7 +59,7 @@ export function Savings({ state, symbol, onUpdateSavings, onUnlock }: SavingsPro
           <CardContent className="space-y-6">
             <div className="space-y-2">
               <div className="flex justify-between text-xs font-bold uppercase tracking-wider text-muted-foreground">
-                <span>Goal: $500</span>
+                <span>Goal: {formatCurrency(500, symbol)}</span>
                 <span>{Math.min(100, Math.round((state.flexibleSavings / 500) * 100))}%</span>
               </div>
               <Progress value={(state.flexibleSavings / 500) * 100} className="h-2 bg-muted" />
@@ -86,7 +87,7 @@ export function Savings({ state, symbol, onUpdateSavings, onUnlock }: SavingsPro
           <CardContent className="space-y-6">
             <div className="space-y-2">
               <div className="flex justify-between text-xs font-bold uppercase tracking-wider text-muted-foreground">
-                <span>Goal: $1,000</span>
+                <span>Goal: {formatCurrency(1000, symbol)}</span>
                 <span>{Math.min(100, Math.round((state.lockedSavings / 1000) * 100))}%</span>
               </div>
               <Progress value={(state.lockedSavings / 1000) * 100} className="h-2 bg-muted" />
