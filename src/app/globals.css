@@ -4,26 +4,26 @@
 
 @layer base {
   :root {
-    --background: 40 18% 96%;
-    --foreground: 0 0% 7%;
+    --background: 40 18% 97%; /* Warm off-white #F8F6F2 */
+    --foreground: 0 0% 7%; /* Near-black #111111 */
     --card: 0 0% 100%;
     --card-foreground: 0 0% 7%;
     --popover: 0 0% 100%;
     --popover-foreground: 0 0% 7%;
-    --primary: 239 84% 67%;
+    --primary: 239 84% 67%; /* Vibrant Indigo #6366F1 */
     --primary-foreground: 0 0% 100%;
-    --secondary: 220 13% 91%;
+    --secondary: 0 0% 90%;
     --secondary-foreground: 0 0% 7%;
-    --muted: 210 20% 96%;
+    --muted: 0 0% 96%;
     --muted-foreground: 215 14% 46%;
     --accent: 239 84% 67%;
     --accent-foreground: 0 0% 100%;
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
-    --border: 220 13% 91%;
-    --input: 220 13% 91%;
+    --border: 220 13% 92%; /* Soft gray #E5E7EB */
+    --input: 220 13% 92%;
     --ring: 239 84% 67%;
-    --radius: 1.25rem;
+    --radius: 1rem;
   }
 
   body {
@@ -33,21 +33,21 @@
 
   h1, h2, h3, h4 {
     font-family: 'Plus Jakarta Sans', sans-serif;
-    @apply font-bold tracking-tight;
+    @apply font-bold tracking-tight text-foreground;
   }
 }
 
 @layer components {
   .flat-card {
-    @apply bg-card border border-border rounded-[var(--radius)] shadow-sm transition-all duration-200;
+    @apply bg-card border border-border rounded-[1.5rem] transition-all duration-300;
   }
 
   .flat-card:hover {
-    @apply border-border/80 shadow-md;
+    @apply border-primary/20 shadow-sm;
   }
 
   .pill-button {
-    @apply rounded-full font-semibold transition-all duration-200 active:scale-95;
+    @apply rounded-full font-bold transition-all duration-200 active:scale-[0.98] px-6 py-3;
   }
 }
 

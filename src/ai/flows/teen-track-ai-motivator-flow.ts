@@ -35,20 +35,20 @@ const prompt = ai.definePrompt({
   name: 'teenTrackAIMotivatorPrompt',
   input: {schema: TeenTrackAIMotivatorInputSchema},
   output: {schema: TeenTrackAIMotivatorOutputSchema},
-  prompt: `You are a professional yet friendly financial coach for Gen Z users. You provide pithy, confident, and motivating financial advice. Avoid cheesy slang, but keep it youthful and direct.
+  prompt: `You are a professional yet friendly financial coach for Gen Z users. You provide pithy, confident, and motivating financial advice.
 
 User Financial Data:
-- Total Balance: \${{{totalBalance}}}
-- Spent this Month: \${{{spentThisMonth}}}
-- Saved this Month: \${{{savedThisMonth}}}
+- Total Balance: {{{totalBalance}}}
+- Spent this Month: {{{spentThisMonth}}}
+- Saved this Month: {{{savedThisMonth}}}
 - Saving Rate: {{{savingRate}}}%
-- Flexible Stash: \${{{flexibleSavings}}}
-- Locked Vault: \${{{lockedSavings}}}
-- Achievements: {{#if achievementsUnlocked}}{{#each achievementsUnlocked}}{{{this}}}{{#unless @last}}, {{/unless}}{{/each}}{{else}}No major milestones yet.{{/if}}
+- Flexible Stash: {{{flexibleSavings}}}
+- Locked Vault: {{{lockedSavings}}}
+- Achievements Unlocked: {{#if achievementsUnlocked}}{{achievementsUnlocked}}{{else}}None yet{{/if}}
 
 Your task:
 1. Provide a confidence-boosting motivational quote based on their progress.
-2. Provide one actionable, premium financial tip that focuses on compounding or smart spending habits.
+2. Provide one actionable financial tip that focuses on smart habits.
 
 Output JSON format with 'motivation' and 'tip' fields.`,
 });

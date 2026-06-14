@@ -79,7 +79,7 @@ export function Expenses({ state, symbol, onAddTransaction }: ExpensesProps) {
                 <Label className="text-xs uppercase tracking-widest font-bold text-muted-foreground">Description</Label>
                 <Input value={incomeForm.desc} onChange={e => setIncomeForm({...incomeForm, desc: e.target.value})} className="bg-muted/50 border-none rounded-xl" placeholder="What's this for?" />
               </div>
-              <Button type="submit" disabled={isSubmitting === 'income'} className="w-full pill-button py-6 bg-green-500 hover:bg-green-600 text-white shadow-lg shadow-green-500/20">
+              <Button type="submit" disabled={isSubmitting === 'income'} className="w-full pill-button bg-green-500 hover:bg-green-600 text-white shadow-lg shadow-green-500/20">
                 {isSubmitting === 'income' ? <Loader2 className="animate-spin" /> : 'Log Income'}
               </Button>
             </form>
@@ -122,7 +122,7 @@ export function Expenses({ state, symbol, onAddTransaction }: ExpensesProps) {
               <Button 
                 type="submit" 
                 disabled={isSubmitting === 'expense' || (parseFloat(expenseForm.amount) > state.totalBalance)} 
-                className="w-full pill-button py-6 bg-primary hover:bg-primary/90 text-white shadow-lg shadow-primary/20"
+                className="w-full pill-button bg-primary hover:bg-primary/90 text-white shadow-lg shadow-primary/20"
               >
                 {isSubmitting === 'expense' ? <Loader2 className="animate-spin" /> : 'Log Expense'}
               </Button>
@@ -137,7 +137,7 @@ export function Expenses({ state, symbol, onAddTransaction }: ExpensesProps) {
             <History className="w-4 h-4" /> Activity Feed
           </CardTitle>
         </CardHeader>
-        <div className="divide-y">
+        <div className="divide-y divide-border">
           {state.transactions.length === 0 ? (
             <div className="py-16 text-center">
               <p className="text-muted-foreground font-medium">No activity yet. Start tracking to see your feed.</p>
