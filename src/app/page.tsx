@@ -23,7 +23,7 @@ const INITIAL_STATE: AppState = {
   flexibleGoal: 500,
   lockedGoal: 1000,
   lockedUntil: null,
-  currency: 'USD',
+  currency: 'INR',
   unlockedAchievements: ['first_tx'],
   categories: ['Shopping', 'Gaming', 'Food', 'Miscellaneous'],
 };
