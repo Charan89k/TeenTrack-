@@ -1,9 +1,10 @@
 "use client";
 
 import { AppState, CATEGORY_EMOJIS, CATEGORIES } from "@/lib/types";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { formatCurrency } from "@/lib/utils-finance";
 import { Award, TrendingUp, Calendar, Hash } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 const ACHIEVEMENTS = [
   { id: 'first_tx', title: 'Starter', desc: 'Log your first transaction', icon: '🎯' },

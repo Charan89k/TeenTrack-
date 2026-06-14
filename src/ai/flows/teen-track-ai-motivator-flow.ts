@@ -44,7 +44,7 @@ User Financial Data:
 - Saving Rate: {{{savingRate}}}%
 - Flexible Stash: {{{flexibleSavings}}}
 - Locked Vault: {{{lockedSavings}}}
-- Achievements Unlocked: {{#if achievementsUnlocked}}{{achievementsUnlocked}}{{else}}None yet{{/if}}
+- Achievements Unlocked: {{#if achievementsUnlocked}}{{#each achievementsUnlocked}}{{{this}}}{{#unless @last}}, {{/unless}}{{/each}}{{else}}None yet{{/if}}
 
 Your task:
 1. Provide a confidence-boosting motivational quote based on their progress.
