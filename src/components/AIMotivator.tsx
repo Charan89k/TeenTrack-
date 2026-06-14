@@ -14,8 +14,8 @@ export function AIMotivator({ state }: { state: AppState }) {
 
   const updateAI = async () => {
     const now = Date.now();
-    // 5-minute cooldown between AI updates to respect quota
-    if (now - lastRequestTime.current < 300000) return;
+    // 10-minute cooldown between AI updates to respect quota and prevent spam
+    if (now - lastRequestTime.current < 600000) return;
 
     try {
       lastRequestTime.current = now;
@@ -41,49 +41,48 @@ export function AIMotivator({ state }: { state: AppState }) {
       setQuote(res);
       setIsVisible(true);
 
-      // Auto-hide after 12 seconds
-      setTimeout(() => setIsVisible(false), 12000);
+      // Auto-hide after 15 seconds
+      setTimeout(() => setIsVisible(false), 15000);
     } catch (e: any) {
-      // Silently handle errors to maintain a premium feel
-      console.warn("AI Motivator paused:", e.message);
+      // Silently handle errors (like quota exhaustion) to maintain a premium feel
       setIsVisible(false);
     }
   };
 
   useEffect(() => {
     updateAI();
-    // Poll every 10 minutes
-    const timer = setInterval(updateAI, 600000);
+    // Poll every 15 minutes
+    const timer = setInterval(updateAI, 900000);
     return () => clearInterval(timer);
   }, [state.unlockedAchievements.length]);
 
   if (!isVisible || !quote) return null;
 
   return (
-    <div className="fixed top-24 right-6 z-50 w-full max-w-[340px] animate-in slide-in-from-right-8 duration-500">
-      <Card className="bg-white border border-border p-6 shadow-xl rounded-3xl relative">
+    <div className="fixed bottom-24 left-6 z-50 w-full max-w-[280px] animate-in slide-in-from-left-8 duration-500">
+      <Card className="bg-white border border-border p-5 shadow-xl rounded-2xl relative">
         <button 
           onClick={() => setIsVisible(false)} 
-          className="absolute top-4 right-4 text-muted-foreground hover:text-foreground transition-colors"
+          className="absolute top-3 right-3 text-muted-foreground hover:text-foreground transition-colors"
         >
-          <X className="w-4 h-4" />
+          <X className="w-3.5 h-3.5" />
         </button>
         
-        <div className="flex items-center gap-2 mb-4">
-          <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
-            <Sparkles className="w-4 h-4 text-primary" />
+        <div className="flex items-center gap-2 mb-3">
+          <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center">
+            <Sparkles className="w-3 h-3 text-primary" />
           </div>
-          <span className="text-[10px] font-black uppercase tracking-widest text-primary">Financial Coach</span>
+          <span className="text-[9px] font-black uppercase tracking-widest text-primary">Coach</span>
         </div>
         
-        <div className="space-y-4">
-          <p className="text-md font-bold text-foreground leading-tight tracking-tight">
+        <div className="space-y-3">
+          <p className="text-sm font-bold text-foreground leading-tight tracking-tight">
             "{quote.motivation}"
           </p>
           <div className="h-px bg-border w-full" />
-          <div className="bg-muted/30 p-3 rounded-xl">
-             <p className="text-[11px] text-muted-foreground font-medium leading-relaxed">
-               <span className="font-black text-primary uppercase mr-1">Pro Tip:</span> 
+          <div className="bg-muted/30 p-2.5 rounded-lg">
+             <p className="text-[10px] text-muted-foreground font-medium leading-relaxed">
+               <span className="font-black text-primary uppercase mr-1">Tip:</span> 
                {quote.tip}
              </p>
           </div>
