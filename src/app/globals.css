@@ -25,6 +25,15 @@
     --ring: 264 47% 46%;
     --radius: 1.25rem;
   }
+
+  body {
+    @apply bg-animated-gradient min-h-screen text-white antialiased;
+    font-family: 'PT Sans', sans-serif;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: 'Poppins', sans-serif;
+  }
 }
 
 @layer utilities {
@@ -104,12 +113,4 @@
     opacity: 1;
     left: 50%;
   }
-}
-
-body {
-  @apply bg-animated-gradient min-h-screen font-body text-white antialiased;
-}
-
-h1, h2, h3, h4 {
-  @apply font-headline;
 }
