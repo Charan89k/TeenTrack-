@@ -17,14 +17,14 @@ import Loading from "./loading";
 
 const INITIAL_STATE: AppState = {
   transactions: [],
-  totalBalance: 1250.00,
-  flexibleSavings: 200,
-  lockedSavings: 500,
+  totalBalance: 0,
+  flexibleSavings: 0,
+  lockedSavings: 0,
   flexibleGoal: 500,
   lockedGoal: 1000,
   lockedUntil: null,
   currency: 'INR',
-  unlockedAchievements: ['first_tx'],
+  unlockedAchievements: [],
   categories: ['Shopping', 'Gaming', 'Food', 'Miscellaneous'],
 };
 
@@ -205,7 +205,7 @@ export default function TeenTrackApp() {
     toast({ title: "Vault Unlocked", description: "5% bonus has been applied to your balance." });
   };
 
-  const currentSymbol = CURRENCIES.find(c => c.code === state.currency)?.symbol || '$';
+  const currentSymbol = CURRENCIES.find(c => c.code === state.currency)?.symbol || '₹';
 
   const getSpendLevel = () => {
     const count = state.transactions.filter(t => t.type === 'expense').length;
