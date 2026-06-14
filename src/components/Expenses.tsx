@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { formatCurrency } from "@/lib/utils-finance";
 import { Loader2 } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface ExpensesProps {
   state: AppState;

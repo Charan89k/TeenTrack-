@@ -1,3 +1,4 @@
+
 'use server';
 /**
  * @fileOverview A Genkit flow for generating personalized motivational messages and financial tips for teen users.
@@ -38,13 +39,13 @@ const prompt = ai.definePrompt({
   prompt: `You are a friendly and encouraging financial coach for teens, specifically for the "Teen Track" app. Your goal is to provide personalized, snappy motivational quotes and actionable financial tips based on the user's spending and saving habits. Keep it positive, gamified, and easy to understand. Use emojis where appropriate to make it fun!
 
 Here's the user's financial snapshot:
-- Current Total Balance: \${{totalBalance}}
-- Spent This Month: \${{spentThisMonth}}
-- Saved This Month: \${{savedThisMonth}}
-- Saving Rate: {{savingRate}}%
-- Flexible Savings: \${{flexibleSavings}}
-- Locked Savings: \${{lockedSavings}}
-- Achievements Unlocked: {{#if achievementsUnlocked}}{{#each achievementsUnlocked}}{{this}}{{#unless @last}}, {{/unless}}{{/each}}{{else}}None yet!{{/if}}
+- Current Total Balance: \${{{totalBalance}}}
+- Spent This Month: \${{{spentThisMonth}}}
+- Saved This Month: \${{{savedThisMonth}}}
+- Saving Rate: {{{savingRate}}}%
+- Flexible Savings: \${{{flexibleSavings}}}
+- Locked Savings: \${{{lockedSavings}}}
+- Achievements Unlocked: {{#if achievementsUnlocked}}{{#each achievementsUnlocked}}{{{this}}}{{#unless @last}}, {{/unless}}{{/each}}{{else}}None yet!{{/if}}
 
 Motivational Message:
 Financial Tip:`,
