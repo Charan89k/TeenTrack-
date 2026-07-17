@@ -10,5 +10,5 @@ export const INITIAL_STATE: AppState = {
   lockedUntil: null,
   currency: "INR",
   unlockedAchievements: [],
-  categories: ["Shopping", "Gaming", "Food", "Miscellaneous"],
+  categories: ["Karizma ZMR", "Bullet 350", "Ninja250R", "Ford iKon", "Access"],
 };

@@ -118,14 +118,14 @@ export function Savings({ state, symbol, onUpdateSavings, onUpdateGoals, onUnloc
                     onChange={e => setFlexAmount(e.target.value)} 
                     className="bg-muted border-none rounded-xl"
                   />
-                  <Button onClick={() => onUpdateSavings('flex', parseFloat(flexAmount), 'adjust')} className="bg-foreground text-white pill-button">Adjust</Button>
+                  <Button onClick={() => onUpdateSavings('flex', parseFloat(flexAmount), 'adjust')} className="bg-foreground text-background hover:bg-foreground/90 pill-button">Adjust</Button>
                 </div>
               </div>
             ) : (
               <div className="space-y-4">
                 <div className="flex gap-2">
                   <Input type="number" placeholder="0.00" value={flexAmount} onChange={e => setFlexAmount(e.target.value)} className="bg-muted border-none rounded-xl" />
-                  <Button onClick={() => onUpdateSavings('flex', parseFloat(flexAmount), 'deposit')} className="bg-foreground text-white pill-button px-6">Save</Button>
+                  <Button onClick={() => onUpdateSavings('flex', parseFloat(flexAmount), 'deposit')} className="bg-foreground text-background hover:bg-foreground/90 pill-button px-6">Save</Button>
                   <Button onClick={() => onUpdateSavings('flex', parseFloat(flexAmount), 'withdraw')} variant="outline" className="pill-button px-6">Withdraw</Button>
                 </div>
                 <p className="text-xs text-muted-foreground font-medium leading-relaxed">
@@ -177,7 +177,7 @@ export function Savings({ state, symbol, onUpdateSavings, onUpdateGoals, onUnloc
                     onChange={e => setLockedAmount(e.target.value)} 
                     className="bg-muted border-none rounded-xl"
                   />
-                  <Button onClick={() => onUpdateSavings('locked', parseFloat(lockedAmount), 'adjust')} className="bg-foreground text-white pill-button">Adjust</Button>
+                  <Button onClick={() => onUpdateSavings('locked', parseFloat(lockedAmount), 'adjust')} className="bg-foreground text-background hover:bg-foreground/90 pill-button">Adjust</Button>
                 </div>
               </div>
             ) : state.lockedUntil ? (

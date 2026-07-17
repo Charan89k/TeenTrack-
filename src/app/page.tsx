@@ -14,23 +14,17 @@ import { useToast } from "@/hooks/use-toast";
 import { INITIAL_STATE } from "@/lib/default-state";
 import { AppState, CURRENCIES, TransactionType } from "@/lib/types";
 import Loading from "./loading";
-
-async function apiRequest<T>(url: string, options?: RequestInit): Promise<T> {
-  const response = await fetch(url, {
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...options?.headers,
-    },
-  });
-  const payload = await response.json();
-
-  if (!response.ok) {
-    throw new Error(payload?.error || "Request failed");
-  }
-
-  return payload;
-}
+import {
+  loadLocalState,
+  addLocalTransaction,
+  updateLocalSavings,
+  updateLocalGoals,
+  addLocalCategory,
+  updateLocalCategory,
+  deleteLocalCategory,
+  updateLocalCurrency,
+  unlockLocalVault,
+} from "@/lib/client-store";
 
 export default function TeenTrackApp() {
   const [state, setState] = useState<AppState>(INITIAL_STATE);
@@ -39,9 +33,35 @@ export default function TeenTrackApp() {
   const [loadError, setLoadError] = useState<string | null>(null);
   const achievementsRef = useRef<string[]>([]);
   const { toast } = useToast();
+  const [theme, setTheme] = useState<'dark' | 'light'>('dark');
 
   useEffect(() => {
-    apiRequest<AppState>("/api/state")
+    const saved = localStorage.getItem('theme') as 'dark' | 'light' | null;
+    if (saved) {
+      setTheme(saved);
+      if (saved === 'light') {
+        document.documentElement.classList.remove('dark');
+      } else {
+        document.documentElement.classList.add('dark');
+      }
+    } else {
+      document.documentElement.classList.add('dark');
+    }
+  }, []);
+
+  const toggleTheme = () => {
+    const nextTheme = theme === 'dark' ? 'light' : 'dark';
+    setTheme(nextTheme);
+    localStorage.setItem('theme', nextTheme);
+    if (nextTheme === 'light') {
+      document.documentElement.classList.remove('dark');
+    } else {
+      document.documentElement.classList.add('dark');
+    }
+  };
+
+  useEffect(() => {
+    loadLocalState()
       .then((nextState) => {
         achievementsRef.current = nextState.unlockedAchievements;
         setState(nextState);
@@ -92,10 +112,7 @@ export default function TeenTrackApp() {
     date: string,
   ) => {
     await runMutation(
-      apiRequest<AppState>("/api/transactions", {
-        method: "POST",
-        body: JSON.stringify({ amount, type, category, description, date }),
-      }),
+      addLocalTransaction(state, { amount, type, category, description, date }),
       {
         title: type === "income" ? "Income Added" : "Expense Logged",
         description: type === "income" ? `+${amount} tracked.` : `-${amount} tracked.`,
@@ -111,68 +128,49 @@ export default function TeenTrackApp() {
     if (Number.isNaN(amount) || (amount <= 0 && action !== "adjust")) return;
 
     await runMutation(
-      apiRequest<AppState>("/api/savings", {
-        method: "POST",
-        body: JSON.stringify({ type, amount, action }),
-      }),
+      updateLocalSavings(state, { type, amount, action }),
       { title: "Savings Updated", description: "Your balance and activity have been updated." },
     );
   };
 
   const handleUpdateGoals = async (flexibleGoal: number, lockedGoal: number) => {
     await runMutation(
-      apiRequest<AppState>("/api/goals", {
-        method: "PATCH",
-        body: JSON.stringify({ flexibleGoal, lockedGoal }),
-      }),
+      updateLocalGoals(state, { flexibleGoal, lockedGoal }),
       { title: "Goals Updated", description: "Your savings targets have been saved." },
     );
   };
 
   const handleUpdateCategory = async (index: number, newName: string) => {
     await runMutation(
-      apiRequest<AppState>(`/api/categories/${index}`, {
-        method: "PATCH",
-        body: JSON.stringify({ name: newName }),
-      }),
+      updateLocalCategory(state, index, { name: newName }),
       { title: "Category Updated", description: "Your dashboard category was renamed." },
     );
   };
 
   const handleAddCategory = async () => {
     await runMutation(
-      apiRequest<AppState>("/api/categories", {
-        method: "POST",
-        body: JSON.stringify({ name: "New Category" }),
-      }),
+      addLocalCategory(state),
       { title: "Category Added", description: "You can rename it by clicking the edit icon." },
     );
   };
 
   const handleDeleteCategory = async (index: number) => {
     await runMutation(
-      apiRequest<AppState>(`/api/categories/${index}`, {
-        method: "DELETE",
-      }),
+      deleteLocalCategory(state, index),
       { title: "Category Deleted", description: "The category has been removed from your dashboard." },
     );
   };
 
   const handleUnlock = async () => {
     await runMutation(
-      apiRequest<AppState>("/api/savings/unlock", {
-        method: "POST",
-      }),
+      unlockLocalVault(state),
       { title: "Vault Unlocked", description: "5% bonus has been applied to your balance." },
     );
   };
 
   const handleCurrencyChange = async (currency: string) => {
     await runMutation(
-      apiRequest<AppState>("/api/currency", {
-        method: "PATCH",
-        body: JSON.stringify({ currency }),
-      }),
+      updateLocalCurrency(state, { currency }),
       { title: "Currency Updated", description: "Your display currency has been saved." },
     );
   };
@@ -200,7 +198,7 @@ export default function TeenTrackApp() {
   if (loadError) {
     return (
       <main className="min-h-screen max-w-5xl mx-auto pb-24 px-4 sm:px-6 flex items-center justify-center">
-        <div className="flat-card bg-white border border-border rounded-2xl p-8 text-center max-w-md">
+        <div className="flat-card bg-card border border-border rounded-2xl p-8 text-center max-w-md">
           <h1 className="text-xl font-extrabold mb-2">TeenTrack could not start</h1>
           <p className="text-sm text-muted-foreground font-medium">{loadError}</p>
         </div>
@@ -211,7 +209,7 @@ export default function TeenTrackApp() {
 
   return (
     <main className="min-h-screen max-w-5xl mx-auto pb-24 px-4 sm:px-6">
-      <Header spendLevel={getSpendLevel()} saveLevel={getSaveLevel()} />
+      <Header spendLevel={getSpendLevel()} saveLevel={getSaveLevel()} theme={theme} onToggleTheme={toggleTheme} />
       <AIMotivator state={state} />
 
       <Navigation activeTab={activeTab} setActiveTab={setActiveTab} />

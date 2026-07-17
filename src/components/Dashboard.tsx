@@ -78,7 +78,7 @@ export function Dashboard({ state, symbol, onUpdateCategory, onAddCategory, onDe
         <div className="flex items-center gap-2">
           <Filter className="w-4 h-4 text-muted-foreground" />
           <Select value={criteria} onValueChange={(v: ViewCriteria) => setCriteria(v)}>
-            <SelectTrigger className="w-[140px] h-9 rounded-full bg-white border-border text-xs font-bold uppercase tracking-wider focus:ring-primary/20">
+            <SelectTrigger className="w-[140px] h-9 rounded-full bg-card border-border text-xs font-bold uppercase tracking-wider focus:ring-primary/20">
               <SelectValue placeholder="Period" />
             </SelectTrigger>
             <SelectContent className="rounded-2xl">
@@ -96,11 +96,11 @@ export function Dashboard({ state, symbol, onUpdateCategory, onAddCategory, onDe
             {formatCurrency(state.totalBalance, symbol, state.currency)}
           </h2>
           <div className="flex gap-4 mt-6">
-            <div className="flex items-center gap-1.5 text-sm font-semibold px-3 py-1 bg-green-50 text-green-600 rounded-full">
+            <div className="flex items-center gap-1.5 text-sm font-semibold px-3 py-1 bg-green-500/10 dark:bg-green-500/20 text-green-600 dark:text-green-400 rounded-full">
               <ArrowUpRight className="w-4 h-4" />
               {formatCurrency(totalIncome, symbol, state.currency)} {criteria === "month" ? "income" : "total income"}
             </div>
-            <div className="flex items-center gap-1.5 text-sm font-semibold px-3 py-1 bg-red-50 text-red-600 rounded-full">
+            <div className="flex items-center gap-1.5 text-sm font-semibold px-3 py-1 bg-red-500/10 dark:bg-red-500/20 text-red-600 dark:text-red-400 rounded-full">
               <ArrowDownRight className="w-4 h-4" />
               {formatCurrency(totalSpent, symbol, state.currency)} {criteria === "month" ? "spent" : "total spent"}
             </div>
@@ -147,7 +147,7 @@ export function Dashboard({ state, symbol, onUpdateCategory, onAddCategory, onDe
                       </button>
                       <button 
                         onClick={() => onDeleteCategory(index)}
-                        className="opacity-0 group-hover:opacity-100 transition-opacity p-1.5 hover:bg-red-50 hover:text-red-500 rounded-full text-muted-foreground"
+                        className="opacity-0 group-hover:opacity-100 transition-opacity p-1.5 hover:bg-red-500/10 hover:text-red-500 rounded-full text-muted-foreground"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
                       </button>

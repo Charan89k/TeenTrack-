@@ -60,7 +60,7 @@ export function AIMotivator({ state }: { state: AppState }) {
 
   return (
     <div className="fixed bottom-24 left-6 z-50 w-full max-w-[280px] animate-in slide-in-from-left-8 duration-500">
-      <Card className="bg-white border border-border p-5 shadow-xl rounded-2xl relative">
+      <Card className="bg-card/95 backdrop-blur-sm border border-border p-5 shadow-xl rounded-2xl relative">
         <button 
           onClick={() => setIsVisible(false)} 
           className="absolute top-3 right-3 text-muted-foreground hover:text-foreground transition-colors"

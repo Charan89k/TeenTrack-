@@ -24,14 +24,15 @@ export type AppState = {
   categories: string[];
 };
 
-export const DEFAULT_CATEGORIES = ['Shopping', 'Gaming', 'Food', 'Miscellaneous'] as const;
+export const DEFAULT_CATEGORIES = ['Karizma ZMR', 'Bullet 350', 'Ninja250R', 'Ford iKon', 'Access'] as const;
 export const INCOME_SOURCES = ['Allowance', 'Gift Money', 'Part-time Job', 'Chores', 'Other'] as const;
 
 export const CATEGORY_EMOJIS: Record<string, string> = {
-  Shopping: '🛍️',
-  Gaming: '🎮',
-  Food: '🍕',
-  Miscellaneous: '🎯',
+  'Karizma ZMR': '🏍️',
+  'Bullet 350': '🏍️',
+  'Ninja250R': '🏍️',
+  'Ford iKon': '🚗',
+  'Access': '🛵',
   Allowance: '💰',
   'Gift Money': '🎁',
   'Part-time Job': '💼',

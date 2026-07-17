@@ -19,8 +19,8 @@ const TABS: { id: Tab; icon: any; label: string }[] = [
 
 export function Navigation({ activeTab, setActiveTab }: NavigationProps) {
   return (
-    <div className="sticky top-6 z-40 flex justify-center w-full">
-      <nav className="flex items-center gap-1 p-1.5 bg-white border border-border rounded-full shadow-lg">
+    <div className="sticky top-6 z-40 flex justify-center w-full animate-in fade-in duration-500">
+      <nav className="flex items-center gap-1 p-1.5 bg-card/90 backdrop-blur-md border border-border rounded-full shadow-lg">
         {TABS.map((tab) => {
           const Icon = tab.icon;
           const isActive = activeTab === tab.id;

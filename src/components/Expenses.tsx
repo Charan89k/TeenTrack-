@@ -156,7 +156,7 @@ export function Expenses({ state, symbol, onAddTransaction }: ExpensesProps) {
                     <p className="text-[10px] text-muted-foreground/50 font-bold uppercase mt-1">{t.date}</p>
                   </div>
                 </div>
-                <p className={cn("text-xl font-extrabold", t.type === 'income' ? 'text-green-600' : 'text-foreground')}>
+                <p className={cn("text-xl font-extrabold", t.type === 'income' ? 'text-green-600 dark:text-green-400' : 'text-foreground')}>
                   {t.type === 'income' ? '+' : '−'} {formatCurrency(t.amount, symbol, state.currency)}
                 </p>
               </div>
