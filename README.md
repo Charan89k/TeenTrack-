@@ -2,6 +2,21 @@
 
 A minimal money tracker for teens, built with React + Vite + Tailwind. All data stays on-device (Capacitor Preferences / localStorage).
 
+## 📲 Download for Android
+
+<a href="https://github.com/PavanSai-25/TeenTrack-/releases/latest/download/TeenTrack.apk">
+  <img src="https://img.shields.io/badge/Download-APK-E50914?style=for-the-badge&logo=android&logoColor=white" alt="Download APK" height="48">
+</a>
+
+**[⬇️ Download TeenTrack.apk](https://github.com/PavanSai-25/TeenTrack-/releases/latest/download/TeenTrack.apk)**
+
+How to install:
+1. Tap the button above on your Android phone. The APK downloads straight away.
+2. Open the downloaded file. If Android asks, allow **"Install unknown apps"** for your browser or file manager.
+3. Tap **Install** and open TeenTrack.
+
+Requires Android 7.0 or newer. All releases are listed under [Releases](https://github.com/PavanSai-25/TeenTrack-/releases).
+
 ## Web
 
 ```bash
