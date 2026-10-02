@@ -9,7 +9,7 @@ export function CurrencySelector({ currency, value, onCurrencyChange, onChange }
   return (
     <div className="fixed bottom-6 right-6 z-50">
       <Select value={activeValue} onValueChange={activeOnChange}>
-        <SelectTrigger className="w-[100px] h-12 bg-card/90 backdrop-blur-md border border-border rounded-full shadow-lg font-bold text-sm">
+        <SelectTrigger className="min-w-[100px] w-auto whitespace-nowrap h-12 bg-card/90 backdrop-blur-md border border-border rounded-full shadow-lg font-bold text-sm">
           <div className="flex items-center gap-2">
             <Globe className="w-4 h-4 text-primary" />
             <SelectValue placeholder="USD" />
